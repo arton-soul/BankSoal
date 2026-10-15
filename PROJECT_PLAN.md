@@ -90,20 +90,22 @@ Dokumen ini memuat perencanaan kerja menyeluruh untuk membangun aplikasi **Bank 
 ### FASE 4: Mesin Skoring, Review & Rumus Sains
 **Tujuan:** Menghitung skor secara akurat sesuai jenis ujian dan menampilkan pembahasan edukatif.
 
-- [ ] **Task 4.1: Multi-Rule Scoring Calculator**
+- [x] **Task 4.1: Multi-Rule Scoring Calculator**
   - **Aturan Standar:** Benar = 1 (atau poin tertentu), Salah = 0.
   - **Aturan TKP CPNS:** Bobot bertingkat 1 sampai 5 untuk setiap opsi (tidak ada salah).
   - **Aturan Penalti:** Benar = +4, Salah = -1, Kosong = 0 (untuk tes model lama/khusus).
-- [ ] **Task 4.2: Layar Hasil Ujian (Result & Analytics)**
+  - Rincian kalkulasi per subtes (TWK min 65, TIU min 80, TKP min 166).
+- [x] **Task 4.2: Layar Hasil Ujian (Result & Analytics)**
   - Tampilan total skor, status lolos/tidak lolos *Passing Grade*.
-  - Rincian performa per subtes (contoh pada CPNS: TWK 85/65, TIU 110/80, TKP 175/166).
-  - Durasi pengerjaan rata-rata per soal.
-- [ ] **Task 4.3: Layar Pembahasan Mendalam (Review Mode)**
+  - Rincian performa per subtes (TWK, TIU, TKP).
+  - Durasi pengerjaan rata-rata per soal dan akurasi %.
+- [x] **Task 4.3: Layar Pembahasan Mendalam (Review Mode)**
   - Menampilkan kembali semua nomor dengan warna: kunci jawaban benar (hijau) dan jawaban user jika salah (merah).
   - Teks penjelasan/pembahasan lengkap di bawah soal.
   - Fitur **Bookmark Soal** untuk menyimpan soal sulit ke daftar favorit.
-- [ ] **Task 4.4: Dukungan Rumus Matematika / Fisika (KaTeX / Math)**
-  - Integrasikan komponen rendering LaTeX ringan agar rumus matematika, pecahan, dan integral tampil rapi.
+  - Filter nomor: "Semua", "Salah", "Benar", "Kosong", "Disimpan".
+- [x] **Task 4.4: Dukungan Rumus Matematika / Fisika (KaTeX / Math)**
+  - Integrasikan komponen rendering LaTeX ringan / MathTextView agar rumus matematika, pecahan, dan integral tampil rapi.
 
 ---
 
