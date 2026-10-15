@@ -1,0 +1,59 @@
+{
+  "package": {
+    "id": "kedinasan_sample_01",
+    "categoryId": "KEDINASAN",
+    "subCategory": "Tes Akademik",
+    "title": "Tryout Seleksi Kedinasan IPDN/STAN 2026",
+    "description": "Uji kemampuan akademik dan psikotes seleksi sekolah ikatan dinas.",
+    "totalQuestions": 2,
+    "durationMinutes": 10,
+    "passingScore": 320,
+    "isFree": true,
+    "priceIdr": 0,
+    "version": 1,
+    "downloadUrl": "packages/kedinasan_sample_01.json"
+  },
+  "passages": [],
+  "questions": [
+    {
+      "id": "kedinasan_twk_01",
+      "packageId": "kedinasan_sample_01",
+      "sectionName": "TWK Kedinasan",
+      "questionNumber": 1,
+      "questionText": "Lembaga negara yang berwenang mengadili pada tingkat pertama dan terakhir yang putusannya bersifat final untuk menguji undang-undang terhadap UUD 1945 adalah...",
+      "optionA": "Mahkamah Agung",
+      "optionB": "Mahkamah Konstitusi",
+      "optionC": "Komisi Yudisial",
+      "optionD": "Dewan Perwakilan Rakyat",
+      "optionE": "Badan Pemeriksa Keuangan",
+      "scoringType": "STANDARD",
+      "correctAnswer": "B",
+      "scoreA": 0,
+      "scoreB": 5,
+      "scoreC": 0,
+      "scoreD": 0,
+      "scoreE": 0,
+      "explanation": "Pasal 24C UUD 1945 menyatakan bahwa Mahkamah Konstitusi berwenang menguji UU terhadap UUD pada tingkat pertama dan terakhir secara final."
+    },
+    {
+      "id": "kedinasan_tiu_01",
+      "packageId": "kedinasan_sample_01",
+      "sectionName": "TIU Kedinasan",
+      "questionNumber": 2,
+      "questionText": "Jika x = 25% dari 80 dan y = 1/5 dari 100, maka hubungan x dan y adalah...",
+      "optionA": "x > y",
+      "optionB": "x < y",
+      "optionC": "x = y",
+      "optionD": "x = 2y",
+      "optionE": "Hubungan tidak dapat ditentukan",
+      "scoringType": "STANDARD",
+      "correctAnswer": "C",
+      "scoreA": 0,
+      "scoreB": 0,
+      "scoreC": 5,
+      "scoreD": 0,
+      "scoreE": 0,
+      "explanation": "x = 0.25 * 80 = 20. y = 0.20 * 100 = 20. Jadi x = y."
+    }
+  ]
+}

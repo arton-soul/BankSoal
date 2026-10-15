@@ -2,6 +2,7 @@ package com.banksoalpro.app.core.di
 
 import android.content.Context
 import com.banksoalpro.app.core.database.BankSoalDatabase
+import com.banksoalpro.app.data.remote.sync.ContentSyncManager
 import com.banksoalpro.app.data.repository.ExamRepositoryImpl
 import com.banksoalpro.app.data.repository.PackageRepositoryImpl
 import com.banksoalpro.app.domain.repository.ExamRepository
@@ -11,6 +12,7 @@ interface AppContainer {
     val database: BankSoalDatabase
     val packageRepository: PackageRepository
     val examRepository: ExamRepository
+    val syncManager: ContentSyncManager
 }
 
 class DefaultAppContainer(private val context: Context) : AppContainer {
@@ -28,5 +30,9 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
             passageDao = database.passageDao(),
             examAttemptDao = database.examAttemptDao()
         )
+    }
+
+    override val syncManager: ContentSyncManager by lazy {
+        ContentSyncManager(database, context)
     }
 }

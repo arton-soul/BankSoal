@@ -14,6 +14,7 @@ import androidx.navigation.navArgument
 import com.banksoalpro.app.BankSoalApplication
 import com.banksoalpro.app.feature.billing.SubscriptionScreen
 import com.banksoalpro.app.feature.catalog.CatalogScreen
+import com.banksoalpro.app.feature.catalog.CatalogViewModel
 import com.banksoalpro.app.feature.exam.ExamScreen
 import com.banksoalpro.app.feature.exam.ExamViewModel
 import com.banksoalpro.app.feature.home.HomeScreen
@@ -51,8 +52,25 @@ fun AppNavGraph(
             )
         ) { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString(Screen.Catalog.ARG_CATEGORY_ID) ?: ""
+            val context = LocalContext.current
+            val app = context.applicationContext as BankSoalApplication
+
+            val catalogViewModel: CatalogViewModel = viewModel(
+                key = "catalog_$categoryId",
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        @Suppress("UNCHECKED_CAST")
+                        return CatalogViewModel(
+                            packageRepository = app.container.packageRepository,
+                            syncManager = app.container.syncManager
+                        ) as T
+                    }
+                }
+            )
+
             CatalogScreen(
                 categoryId = categoryId,
+                viewModel = catalogViewModel,
                 onPackageClick = { packageId ->
                     navController.navigate(Screen.Exam.createRoute(packageId))
                 },

@@ -1,0 +1,59 @@
+{
+  "package": {
+    "id": "smp_sample_01",
+    "categoryId": "SMP",
+    "subCategory": "Ujian Sekolah",
+    "title": "Tryout Asesmen Nasional SMP 2026",
+    "description": "Latihan literasi dan numerasi asesmen kompetensi minimum SMP/MTs.",
+    "totalQuestions": 2,
+    "durationMinutes": 10,
+    "passingScore": 70,
+    "isFree": true,
+    "priceIdr": 0,
+    "version": 1,
+    "downloadUrl": "packages/smp_sample_01.json"
+  },
+  "passages": [],
+  "questions": [
+    {
+      "id": "smp_num_01",
+      "packageId": "smp_sample_01",
+      "sectionName": "Numerasi SMP",
+      "questionNumber": 1,
+      "questionText": "Sebuah kolam renang berbentuk persegi panjang memiliki panjang 15 meter dan lebar 8 meter. Berapakah keliling kolam tersebut?",
+      "optionA": "23 meter",
+      "optionB": "46 meter",
+      "optionC": "60 meter",
+      "optionD": "120 meter",
+      "optionE": null,
+      "scoringType": "STANDARD",
+      "correctAnswer": "B",
+      "scoreA": 0,
+      "scoreB": 5,
+      "scoreC": 0,
+      "scoreD": 0,
+      "scoreE": 0,
+      "explanation": "Keliling = 2 x (panjang + lebar) = 2 x (15 + 8) = 2 x 23 = 46 meter."
+    },
+    {
+      "id": "smp_ipa_01",
+      "packageId": "smp_sample_01",
+      "sectionName": "IPA Terpadu",
+      "questionNumber": 2,
+      "questionText": "Peristiwa perubahan wujud benda dari padat langsung menjadi gas tanpa melalui fase cair disebut...",
+      "optionA": "Mencair",
+      "optionB": "Menguap",
+      "optionC": "Menyublim",
+      "optionD": "Mengembun",
+      "optionE": null,
+      "scoringType": "STANDARD",
+      "correctAnswer": "C",
+      "scoreA": 0,
+      "scoreB": 0,
+      "scoreC": 5,
+      "scoreD": 0,
+      "scoreE": 0,
+      "explanation": "Menyublim adalah perubahan wujud dari padat langsung menjadi gas (contoh: kapur barus)."
+    }
+  ]
+}

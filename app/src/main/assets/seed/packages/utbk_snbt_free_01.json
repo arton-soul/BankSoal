@@ -1,0 +1,87 @@
+{
+  "package": {
+    "id": "utbk_snbt_free_01",
+    "categoryId": "UTBK",
+    "subCategory": "TPS & Literasi",
+    "title": "Simulasi UTBK-SNBT 2026 Gratis",
+    "description": "Kemampuan Penalaran Umum, Pengetahuan Kuantitatif, Pemahaman Bacaan, dan Literasi.",
+    "totalQuestions": 5,
+    "durationMinutes": 10,
+    "passingScore": 650,
+    "isFree": true,
+    "priceIdr": 0,
+    "version": 1,
+    "downloadUrl": "packages/utbk_snbt_free_01.json"
+  },
+  "passages": [
+    {
+      "id": "passage_literasi_01",
+      "title": "Peran Kecerdasan Buatan dalam Transformasi Pendidikan Nasional",
+      "content": "Perkembangan pesat kecerdasan buatan (Artificial Intelligence/AI) telah membawa transformasi mendasar dalam berbagai sendi kehidupan, terutama di sektor pendidikan. Di era digital saat ini, platform pembelajaran adaptif berbasis AI mampu memetakan kekuatan serta kelemahan peserta didik secara real-time, memberikan rekomendasi bahan belajar yang terpersonalisasi, dan memfasilitasi evaluasi formatif yang berkesinambungan.\n\nKendati demikian, integrasi AI dalam dunia pendidikan menghadirkan tantangan etis dan pedagogis yang tidak boleh diabaikan. Salah satu kekhawatiran terbesar adalah menurunnya kemampuan berpikir kritis dan orisinalitas generasi muda akibat ketergantungan yang berlebihan pada sistem otomatis. Selain itu, kesenjangan akses teknologi antarwilayah di Indonesia masih menjadi pekerjaan rumah besar. Pemanfaatan AI harus diposisikan sebagai akselerator peran guru, bukan pengganti esensi keteladanan dan interaksi emosional antara pendidik dan murid."
+    }
+  ],
+  "questions": [
+    {
+      "id": "utbk_lit_01",
+      "packageId": "utbk_snbt_free_01",
+      "passageId": "passage_literasi_01",
+      "sectionName": "Literasi Bahasa Indonesia",
+      "questionNumber": 1,
+      "questionText": "Berdasarkan wacana di atas, gagasan pokok paragraf pertama adalah...",
+      "optionA": "Dampak negatif kecerdasan buatan terhadap generasi muda.",
+      "optionB": "Peran kecerdasan buatan dalam mentransformasi sektor pendidikan secara adaptif.",
+      "optionC": "Tantangan etika yang dihadapi oleh pendidik di era digital.",
+      "optionD": "Kesenjangan sarana dan infrastruktur teknologi di Indonesia.",
+      "optionE": "Perlunya menggantikan peran guru dengan sistem pembelajaran otomatis.",
+      "scoringType": "STANDARD",
+      "correctAnswer": "B",
+      "scoreA": 0,
+      "scoreB": 1,
+      "scoreC": 0,
+      "scoreD": 0,
+      "scoreE": 0,
+      "explanation": "Paragraf pertama berfokus pada peran AI dalam mentransformasi pendidikan melalui pembelajaran adaptif."
+    },
+    {
+      "id": "utbk_lit_02",
+      "packageId": "utbk_snbt_free_01",
+      "passageId": "passage_literasi_01",
+      "sectionName": "Literasi Bahasa Indonesia",
+      "questionNumber": 2,
+      "questionText": "Menurut teks bacaan, mengapa pemanfaatan AI tidak boleh menggantikan peran seorang guru?",
+      "optionA": "Karena biaya implementasi AI terlalu mahal untuk sekolah-sekolah di pelosok.",
+      "optionB": "Karena AI belum mampu menganalisis hasil belajar peserta didik secara akurat.",
+      "optionC": "Karena esensi keteladanan dan interaksi emosional pendidik tidak dapat digantikan oleh teknologi.",
+      "optionD": "Karena sistem otomatis sering mengalami kesalahan komputasi sistem.",
+      "optionE": "Karena siswa lebih menyukai metode pembelajaran ceramah konvensional.",
+      "scoringType": "STANDARD",
+      "correctAnswer": "C",
+      "scoreA": 0,
+      "scoreB": 0,
+      "scoreC": 1,
+      "scoreD": 0,
+      "scoreE": 0,
+      "explanation": "Esensi keteladanan dan interaksi emosional tidak tergantikan oleh kecerdasan buatan."
+    },
+    {
+      "id": "utbk_pen_01",
+      "packageId": "utbk_snbt_free_01",
+      "sectionName": "Penalaran Matematika",
+      "questionNumber": 3,
+      "questionText": "Sebuah toko buku memberikan diskon bertingkat 20% kemudian tambahan 10% untuk buku tryout seharga Rp 100.000. Berapakah harga akhir yang harus dibayar pembeli?",
+      "optionA": "Rp 70.000",
+      "optionB": "Rp 72.000",
+      "optionC": "Rp 74.000",
+      "optionD": "Rp 75.000",
+      "optionE": "Rp 78.000",
+      "scoringType": "STANDARD",
+      "correctAnswer": "B",
+      "scoreA": 0,
+      "scoreB": 1,
+      "scoreC": 0,
+      "scoreD": 0,
+      "scoreE": 0,
+      "explanation": "Diskon 20%: Rp 80.000. Diskon 10% dari Rp 80.000 = Rp 8.000. Total bayar = Rp 72.000."
+    }
+  ]
+}

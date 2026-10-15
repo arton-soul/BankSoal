@@ -1,7 +1,6 @@
 package com.banksoalpro.app
 
 import android.app.Application
-import com.banksoalpro.app.core.database.SampleDataSeeder
 import com.banksoalpro.app.core.di.AppContainer
 import com.banksoalpro.app.core.di.DefaultAppContainer
 import kotlinx.coroutines.CoroutineScope
@@ -17,15 +16,9 @@ class BankSoalApplication : Application() {
         super.onCreate()
         container = DefaultAppContainer(this)
 
-        // Seed initial packages and questions if empty
+        // Seed initial asset packages on background IO
         CoroutineScope(Dispatchers.IO).launch {
-            val db = container.database
-            val existing = db.examPackageDao().getPackageById("cpns_skd_free_01")
-            if (existing == null) {
-                db.examPackageDao().insertPackages(SampleDataSeeder.getInitialPackages())
-                db.passageDao().insertPassages(SampleDataSeeder.getInitialPassages())
-                db.questionDao().insertQuestions(SampleDataSeeder.getInitialQuestions())
-            }
+            container.syncManager.seedInitialAssetsIfEmpty()
         }
     }
 }

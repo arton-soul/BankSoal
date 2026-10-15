@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-15T00:00:00Z",
+  "packages": [
+    {
+      "id": "cpns_skd_free_01",
+      "categoryId": "CPNS",
+      "subCategory": "SKD CPNS",
+      "title": "Tryout Akbar SKD CPNS 2026 (Starter)",
+      "description": "Simulasi lengkap materi TWK, TIU, dan TKP sesuai kisi-kisi MenPAN-RB terbaru.",
+      "totalQuestions": 10,
+      "durationMinutes": 15,
+      "passingScore": 311,
+      "isFree": true,
+      "priceIdr": 0,
+      "version": 1,
+      "downloadUrl": "packages/cpns_skd_free_01.json"
+    },
+    {
+      "id": "utbk_snbt_free_01",
+      "categoryId": "UTBK",
+      "subCategory": "TPS & Literasi",
+      "title": "Simulasi UTBK-SNBT 2026 Gratis",
+      "description": "Kemampuan Penalaran Umum, Pengetahuan Kuantitatif, Pemahaman Bacaan, dan Literasi.",
+      "totalQuestions": 5,
+      "durationMinutes": 10,
+      "passingScore": 650,
+      "isFree": true,
+      "priceIdr": 0,
+      "version": 1,
+      "downloadUrl": "packages/utbk_snbt_free_01.json"
+    },
+    {
+      "id": "sma_sample_01",
+      "categoryId": "SMA",
+      "subCategory": "Asesmen Sumatif",
+      "title": "Tryout Standar SMA 2026",
+      "description": "Latihan pemantapan materi dan evaluasi kompetensi kurikulum merdeka.",
+      "totalQuestions": 5,
+      "durationMinutes": 10,
+      "passingScore": 75,
+      "isFree": true,
+      "priceIdr": 0,
+      "version": 1,
+      "downloadUrl": "packages/sma_sample_01.json"
+    },
+    {
+      "id": "smp_sample_01",
+      "categoryId": "SMP",
+      "subCategory": "Ujian Sekolah",
+      "title": "Tryout Asesmen Nasional SMP 2026",
+      "description": "Latihan literasi dan numerasi asesmen kompetensi minimum SMP/MTs.",
+      "totalQuestions": 5,
+      "durationMinutes": 10,
+      "passingScore": 70,
+      "isFree": true,
+      "priceIdr": 0,
+      "version": 1,
+      "downloadUrl": "packages/smp_sample_01.json"
+    },
+    {
+      "id": "kedinasan_sample_01",
+      "categoryId": "KEDINASAN",
+      "subCategory": "Tes Akademik",
+      "title": "Tryout Seleksi Kedinasan IPDN/STAN 2026",
+      "description": "Uji kemampuan akademik dan psikotes seleksi sekolah ikatan dinas.",
+      "totalQuestions": 5,
+      "durationMinutes": 10,
+      "passingScore": 320,
+      "isFree": true,
+      "priceIdr": 0,
+      "version": 1,
+      "downloadUrl": "packages/kedinasan_sample_01.json"
+    }
+  ]
+}

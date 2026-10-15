@@ -70,18 +70,20 @@ Dokumen ini memuat perencanaan kerja menyeluruh untuk membangun aplikasi **Bank 
 ### FASE 3: Manajemen Konten & Paket Soal
 **Tujuan:** Pengelolaan ribuan soal secara terstruktur tanpa membuat ukuran APK membengkak.
 
-- [ ] **Task 3.1: Hierarki Kategori & Dashboard Utama**
+- [x] **Task 3.1: Hierarki Kategori & Dashboard Utama**
   - Tampilan Menu Utama:
     - 🎓 **SMP:** Ujian Sekolah, Asesmen Nasional.
     - 🏫 **SMA:** Penilaian Akhir Semester, Ujian Sekolah.
     - 🏛️ **UTBK / SNBT:** Tes Potensi Skolastik (TPS), Literasi Bahasa, Penalaran Matematika.
     - 💼 **CPNS / PPPK:** Seleksi Kompetensi Dasar (TWK, TIU, TKP) & SKB.
     - 👮 **Kedinasan / TNI / POLRI:** Tes Akademik & Psikotes.
-- [ ] **Task 3.2: Format JSON Standar untuk Input Soal**
+  - Integrasi data reaktif Kotlin Flow dari Room DB ke `CatalogScreen` & `CatalogViewModel`.
+- [x] **Task 3.2: Format JSON Standar untuk Input Soal**
   - Buat format baku data soal dalam bentuk JSON (memudahkan penambahan soal secara massal dari Excel/Google Sheets).
-- [ ] **Task 3.3: Paket Starter & Mekanisme Cache Offline**
+  - DTO & Parser aman (`ExamPackageJsonDto.kt`, `ExamJsonParser.kt`) dan dokumentasi di `docs/QUESTION_JSON_SPECIFICATION.md`.
+- [x] **Task 3.3: Paket Starter & Mekanisme Cache Offline / GitHub Content Delivery**
   - Sertakan 1 paket contoh gratis per jenjang di `assets/seed/` sebagai starter saat aplikasi pertama kali diinstal.
-  - Buat service `PackageDownloadManager` untuk mengunduh paket soal tambahan dari cloud storage/API ke Room lokal.
+  - Buat service `ContentSyncManager` untuk mengunduh paket soal tambahan dan update katalog langsung dari GitHub repository pengguna (`arton-soul/BankSoal`).
 
 ---
 
