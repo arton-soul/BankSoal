@@ -38,9 +38,13 @@ fun AppNavGraph(
             val context = LocalContext.current
             val app = context.applicationContext as BankSoalApplication
             val userProfile by app.container.authRepository.currentUser.collectAsStateWithLifecycle(null)
+            val entitlement by app.container.entitlementRepository.currentEntitlement.collectAsStateWithLifecycle(
+                com.banksoalpro.app.domain.model.UserEntitlement(userId = "")
+            )
 
             HomeScreen(
                 userProfile = userProfile,
+                isPremiumUser = entitlement.isSubscriptionActive,
                 onCategoryClick = { categoryId ->
                     navController.navigate(Screen.Catalog.createRoute(categoryId))
                 },
@@ -72,7 +76,9 @@ fun AppNavGraph(
                         @Suppress("UNCHECKED_CAST")
                         return CatalogViewModel(
                             packageRepository = app.container.packageRepository,
-                            syncManager = app.container.syncManager
+                            syncManager = app.container.syncManager,
+                            entitlementRepository = app.container.entitlementRepository,
+                            authRepository = app.container.authRepository
                         ) as T
                     }
                 }
@@ -83,6 +89,9 @@ fun AppNavGraph(
                 viewModel = catalogViewModel,
                 onPackageClick = { packageId ->
                     navController.navigate(Screen.Exam.createRoute(packageId))
+                },
+                onNavigateToSubscription = {
+                    navController.navigate(Screen.Subscription.route)
                 },
                 onBackClick = {
                     navController.popBackStack()
@@ -138,8 +147,15 @@ fun AppNavGraph(
             )
         ) { backStackEntry ->
             val attemptId = backStackEntry.arguments?.getString(Screen.Result.ARG_ATTEMPT_ID) ?: ""
+            val context = LocalContext.current
+            val app = context.applicationContext as BankSoalApplication
+            val entitlement by app.container.entitlementRepository.currentEntitlement.collectAsStateWithLifecycle(
+                com.banksoalpro.app.domain.model.UserEntitlement(userId = "")
+            )
+
             ResultScreen(
                 attemptId = attemptId,
+                isPremiumUser = entitlement.isSubscriptionActive,
                 onReviewClick = { attempt ->
                     navController.navigate(Screen.Review.createRoute(attempt))
                 },
@@ -169,7 +185,23 @@ fun AppNavGraph(
         }
 
         composable(Screen.Subscription.route) {
+            val context = LocalContext.current
+            val app = context.applicationContext as BankSoalApplication
+
+            val subscriptionViewModel: com.banksoalpro.app.feature.billing.SubscriptionViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        @Suppress("UNCHECKED_CAST")
+                        return com.banksoalpro.app.feature.billing.SubscriptionViewModel(
+                            billingRepository = app.container.billingRepository,
+                            entitlementRepository = app.container.entitlementRepository
+                        ) as T
+                    }
+                }
+            )
+
             SubscriptionScreen(
+                viewModel = subscriptionViewModel,
                 onBackClick = {
                     navController.popBackStack()
                 }

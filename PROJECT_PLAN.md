@@ -127,29 +127,32 @@ Dokumen ini memuat perencanaan kerja menyeluruh untuk membangun aplikasi **Bank 
 ### FASE 6: Implementasi Monetisasi (AdMob & Play Billing)
 **Tujuan:** Menghasilkan pendapatan pasif dari iklan dan konversi pengguna berbayar.
 
-- [ ] **Task 6.1: Integrasi Google Mobile Ads (AdMob)**
-  - Setup App ID AdMob di `AndroidManifest.xml`.
-  - Buat `AdsManager` singleton untuk memuat iklan secara *preloaded*:
+- [x] **Task 6.1: Integrasi Google Mobile Ads (AdMob)**
+  - Setup App ID AdMob di `AndroidManifest.xml` (`ca-app-pub-4098008677804088~2352896167`).
+  - Unit Iklan Resmi: Banner (`6068779892`), Interstitial (`4180983159`), Native (`1419088445`), Reward (`8858594761`).
+  - `AdsManager` singleton untuk memuat iklan secara *preloaded*:
     - **Banner Ad:** Di bagian bawah layar katalog paket dan dashboard.
     - **Interstitial Ad:** Tampil secara elegan hanya setelah layar hasil ujian ditutup (maksimal 1x per sesi ujian, jangan ganggu pengerjaan).
-    - **Rewarded Video Ad:** Digunakan untuk membuka 1 pembahasan soal atau mencoba tryout premium gratis.
-  - Pastikan iklan **mati total** jika user berstatus Premium.
-- [ ] **Task 6.2: Integrasi Google Play Billing Library 7.0+**
-  - Buat `BillingRepository` untuk menangani:
-    - Inisialisasi koneksi ke Google Play Store.
+    - **Rewarded Video Ad:** Digunakan untuk membuka paket tryout terkunci atau pembahasan detail secara gratis.
+  - Iklan **mati total** jika user berstatus Premium (`isPremiumUser == true`).
+- [x] **Task 6.2: Integrasi Google Play Billing Library 7.0+**
+  - `BillingRepository` & `BillingRepositoryImpl` untuk menangani:
+    - Inisialisasi koneksi ke Google Play Store (`startConnection`).
     - Mengambil daftar produk & harga lokal (Rupiah).
     - Menangani proses pembelian (*Purchase Flow*).
     - Verifikasi pembelian dan `acknowledgePurchase`.
-- [ ] **Task 6.3: Skema Produk Monetisasi**
+    - Auto-grant hak akses ke `EntitlementRepository`.
+- [x] **Task 6.3: Skema Produk Monetisasi**
   - **In-App Product (Sekali Beli):**
     - `pkg_cpns_master_2026`: Rp29.000
     - `pkg_utbk_lengkap_2026`: Rp39.000
     - `pkg_sma_smp_all`: Rp25.000
   - **Subscription (Langganan):**
     - `sub_pro_monthly`: Rp19.000/bulan (Akses semua paket + Tanpa Iklan)
-    - `sub_pro_yearly`: Rp99.000/tahun
-- [ ] **Task 6.4: Layar Penawaran Premium (Paywall Screen)**
-  - Tampilan visual benefit Premium (Bebas Iklan, Akses Ribuan Soal, Kunci Pembahasan Lengkap, Simulasi CAT Tanpa Batas).
+    - `sub_pro_yearly`: Rp99.000/tahun (Hemat 56%)
+- [x] **Task 6.4: Layar Penawaran Premium (Paywall Screen)**
+  - Layar `SubscriptionScreen.kt` & `SubscriptionViewModel.kt` dengan visual checklist benefit PRO (Bebas Iklan, Ribuan Soal, Pembahasan Tuntas, Simulasi CAT Tanpa Batas).
+  - Pilihan radio card langganan (Bulanan / Tahunan), kartu beli paket satuan sekali bayar, dan tombol *"Pulihkan Pembelian"*.
 
 ---
 

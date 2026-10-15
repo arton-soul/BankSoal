@@ -16,6 +16,9 @@ class BankSoalApplication : Application() {
         super.onCreate()
         container = DefaultAppContainer(this)
 
+        // Initialize AdMob
+        com.banksoalpro.app.core.ads.AdsManager.initialize(this)
+
         // Seed initial asset packages on background IO
         CoroutineScope(Dispatchers.IO).launch {
             container.syncManager.seedInitialAssetsIfEmpty()

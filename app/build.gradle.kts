@@ -21,6 +21,13 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        manifestPlaceholders["admobAppId"] = "ca-app-pub-4098008677804088~2352896167"
+        buildConfigField("String", "ADMOB_APP_ID", "\"ca-app-pub-4098008677804088~2352896167\"")
+        buildConfigField("String", "ADMOB_BANNER_ID", "\"ca-app-pub-4098008677804088/6068779892\"")
+        buildConfigField("String", "ADMOB_INTERSTITIAL_ID", "\"ca-app-pub-4098008677804088/4180983159\"")
+        buildConfigField("String", "ADMOB_NATIVE_ID", "\"ca-app-pub-4098008677804088/1419088445\"")
+        buildConfigField("String", "ADMOB_REWARD_ID", "\"ca-app-pub-4098008677804088/8858594761\"")
     }
 
     buildTypes {
@@ -44,6 +51,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     room {
@@ -82,6 +90,8 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.play.services.auth)
+    implementation(libs.play.services.ads)
+    implementation(libs.play.billing)
 
     testImplementation(libs.junit)
     testImplementation("org.json:json:20240303")

@@ -8,11 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -20,15 +16,22 @@ import androidx.compose.ui.unit.dp
 import com.banksoalpro.app.core.ui.theme.*
 import com.banksoalpro.app.domain.model.ExamPackage
 
+import android.app.Activity
+import androidx.compose.ui.platform.LocalContext
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CatalogScreen(
     categoryId: String,
     viewModel: CatalogViewModel,
     onPackageClick: (String) -> Unit,
+    onNavigateToSubscription: () -> Unit = {},
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    val activity = context as? Activity
     val state by viewModel.uiState.collectAsState()
+    var lockedPackageToUnlock by remember { mutableStateOf<ExamPackage?>(null) }
 
     LaunchedEffect(categoryId) {
         viewModel.loadCategory(categoryId)
@@ -52,6 +55,12 @@ fun CatalogScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
+        bottomBar = {
+            com.banksoalpro.app.core.ads.AdsManager.BannerAdView(
+                isPremiumUser = state.entitlement.isSubscriptionActive,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+        },
         topBar = {
             TopAppBar(
                 title = {
@@ -139,10 +148,18 @@ fun CatalogScreen(
                     ) {
                         items(state.packages) { item ->
                             val isDownloading = state.downloadingPackageId == item.id
+                            val isAccessible = state.entitlement.isPackageAccessible(item.id, item.isFree)
                             ExamPackageDomainCard(
                                 examPackage = item,
                                 isDownloading = isDownloading,
-                                onStartClick = { onPackageClick(item.id) },
+                                isAccessible = isAccessible,
+                                onStartClick = {
+                                    if (isAccessible) {
+                                        onPackageClick(item.id)
+                                    } else {
+                                        lockedPackageToUnlock = item
+                                    }
+                                },
                                 onDownloadClick = {
                                     viewModel.downloadPackage(item.id, "packages/${item.id}.json")
                                 }
@@ -153,12 +170,64 @@ fun CatalogScreen(
             }
         }
     }
+
+    lockedPackageToUnlock?.let { pkg ->
+        AlertDialog(
+            onDismissRequest = { lockedPackageToUnlock = null },
+            icon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Amber500) },
+            title = { Text("Buka Paket Tryout", fontWeight = FontWeight.Bold) },
+            text = {
+                Text(
+                    "Paket '${pkg.title}' merupakan paket tryout PRO. Anda bisa membukanya gratis dengan menonton 1 video singkat, atau berlangganan akun PRO untuk akses seluruh bank soal."
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        val toUnlock = pkg.id
+                        lockedPackageToUnlock = null
+                        if (activity != null) {
+                            com.banksoalpro.app.core.ads.AdsManager.showRewarded(
+                                activity = activity,
+                                isPremiumUser = false,
+                                onRewardEarned = {
+                                    viewModel.unlockPackageWithReward(toUnlock)
+                                    onPackageClick(toUnlock)
+                                },
+                                onAdDismissed = {}
+                            )
+                        }
+                    }
+                ) {
+                    Icon(Icons.Default.PlayCircle, contentDescription = null)
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text("Buka Gratis (Tonton Video)")
+                }
+            },
+            dismissButton = {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    TextButton(onClick = { lockedPackageToUnlock = null }) {
+                        Text("Batal")
+                    }
+                    TextButton(
+                        onClick = {
+                            lockedPackageToUnlock = null
+                            onNavigateToSubscription()
+                        }
+                    ) {
+                        Text("Langganan PRO", fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        )
+    }
 }
 
 @Composable
 fun ExamPackageDomainCard(
     examPackage: ExamPackage,
     isDownloading: Boolean,
+    isAccessible: Boolean = true,
     onStartClick: () -> Unit,
     onDownloadClick: () -> Unit
 ) {
@@ -217,12 +286,12 @@ fun ExamPackageDomainCard(
                         }
                     } else {
                         Surface(
-                            color = Amber100,
+                            color = if (isAccessible) Emerald100 else Amber100,
                             shape = RoundedCornerShape(6.dp)
                         ) {
                             Text(
-                                text = "PREMIUM",
-                                color = Amber600,
+                                text = if (isAccessible) "TERBUKA" else "PREMIUM",
+                                color = if (isAccessible) Emerald600 else Amber600,
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
@@ -296,14 +365,23 @@ fun ExamPackageDomainCard(
                         onClick = onStartClick,
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
+                            containerColor = if (isAccessible) MaterialTheme.colorScheme.primary else Amber500
                         ),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)
+                        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
                     ) {
-                        Text(
-                            text = "Mulai Ujian",
-                            style = MaterialTheme.typography.labelLarge
-                        )
+                        if (!isAccessible) {
+                            Icon(Icons.Default.Lock, contentDescription = null, modifier = Modifier.size(16.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "Buka Paket",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        } else {
+                            Text(
+                                text = "Mulai Ujian",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
                     }
                 } else {
                     OutlinedButton(

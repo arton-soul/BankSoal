@@ -23,16 +23,37 @@ data class CatalogUiState(
     val packages: List<ExamPackage> = emptyList(),
     val isLoading: Boolean = true,
     val syncStatus: SyncStatus = SyncStatus.Idle,
-    val downloadingPackageId: String? = null
+    val downloadingPackageId: String? = null,
+    val entitlement: com.banksoalpro.app.domain.model.UserEntitlement = com.banksoalpro.app.domain.model.UserEntitlement(userId = "")
 )
 
 class CatalogViewModel(
     private val packageRepository: PackageRepository,
-    private val syncManager: ContentSyncManager
+    private val syncManager: ContentSyncManager,
+    private val entitlementRepository: com.banksoalpro.app.domain.repository.EntitlementRepository? = null,
+    private val authRepository: com.banksoalpro.app.domain.repository.AuthRepository? = null
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CatalogUiState())
     val uiState: StateFlow<CatalogUiState> = _uiState.asStateFlow()
+
+    init {
+        entitlementRepository?.let { repo ->
+            viewModelScope.launch {
+                repo.currentEntitlement.collect { ent ->
+                    _uiState.update { it.copy(entitlement = ent) }
+                }
+            }
+        }
+    }
+
+    fun unlockPackageWithReward(packageId: String) {
+        viewModelScope.launch {
+            val user = authRepository?.getCurrentUser()
+            val userId = user?.userId ?: "guest_local"
+            entitlementRepository?.unlockPackage(userId, packageId)
+        }
+    }
 
     fun loadCategory(categoryId: String) {
         _uiState.update { it.copy(categoryId = categoryId, isLoading = true) }

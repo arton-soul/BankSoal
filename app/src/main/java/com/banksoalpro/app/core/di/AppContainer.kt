@@ -24,6 +24,7 @@ interface AppContainer {
     val authRepository: AuthRepository
     val entitlementRepository: EntitlementRepository
     val userDataSyncManager: UserDataSyncManager
+    val billingRepository: com.banksoalpro.app.domain.repository.BillingRepository
 }
 
 class DefaultAppContainer(private val context: Context) : AppContainer {
@@ -65,6 +66,14 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
             entitlementRepository = entitlementRepository,
             database = database,
             remoteGateway = remoteEntitlementGateway
+        )
+    }
+
+    override val billingRepository: com.banksoalpro.app.domain.repository.BillingRepository by lazy {
+        com.banksoalpro.app.data.repository.BillingRepositoryImpl(
+            context = context,
+            authRepository = authRepository,
+            entitlementRepository = entitlementRepository
         )
     }
 }

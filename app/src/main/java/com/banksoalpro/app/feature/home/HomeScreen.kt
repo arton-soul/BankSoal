@@ -81,6 +81,7 @@ val CATEGORIES = listOf(
 @Composable
 fun HomeScreen(
     userProfile: UserProfile? = null,
+    isPremiumUser: Boolean = false,
     onCategoryClick: (String) -> Unit,
     onNavigateToPremium: () -> Unit,
     onNavigateToProfile: () -> Unit = {}
@@ -206,6 +207,13 @@ fun HomeScreen(
             CategoryCard(
                 category = category,
                 onClick = { onCategoryClick(category.id) }
+            )
+        }
+
+        item {
+            com.banksoalpro.app.core.ads.AdsManager.BannerAdView(
+                isPremiumUser = isPremiumUser,
+                modifier = Modifier.padding(top = 8.dp)
             )
         }
     }
