@@ -44,23 +44,24 @@ Dokumen ini memuat perencanaan kerja menyeluruh untuk membangun aplikasi **Bank 
 ### FASE 2: Engine Simulasi Ujian (CAT Engine)
 **Tujuan:** Membuat layar ujian interaktif berstandar CAT (BKN/UTBK) dengan performa tinggi dan bebas lag.
 
-- [ ] **Task 2.1: Model Domain Ujian & State**
+- [x] **Task 2.1: Model Domain Ujian & State**
   - Rancang `ExamUiState` (soal aktif, opsi terpilih, map ragu-ragu, sisa detik timer).
   - Buat `ExamViewModel` yang menangani *countdown timer* via Coroutine Flow.
-- [ ] **Task 2.2: Komponen UI Soal (Question Card)**
+  - Pengacakan opsi jawaban (Dynamic Option Shuffling) per sesi ujian agar pengguna tidak menghafal urutan abjad.
+- [x] **Task 2.2: Komponen UI Soal (Question Card)**
   - Tampilan nomor soal, nama subtes (TIU/TWK/TKP/Matematika).
   - Teks soal dengan dukungan teks panjang dan gambar diagram.
   - Komponen opsi radio button modern (A, B, C, D, E).
-- [ ] **Task 2.3: Lembar Navigasi Kisi Nomor Soal (Grid Sheet)**
+- [x] **Task 2.3: Lembar Navigasi Kisi Nomor Soal (Grid Sheet)**
   - Bottom sheet / dialog yang menampilkan seluruh nomor soal (misal: 1–110).
   - Warna indikator real-time:
     - 🟩 Hijau = Terjawab
     - 🟨 Kuning = Ragu-ragu
     - ⬜ Abu-abu = Belum dikerjakan
   - Aksi *tap* nomor langsung melompat (*jump to question*).
-- [ ] **Task 2.4: Wacana / Teks Bacaan Panjang (Passage Viewer)**
+- [x] **Task 2.4: Wacana / Teks Bacaan Panjang (Passage Viewer)**
   - Sediakan panel atau tab yang bisa di-*scroll* untuk membaca teks wacana panjang bagi soal pemahaman bacaan Bahasa / TPS.
-- [ ] **Task 2.5: Dialog Konfirmasi & Selesai Ujian**
+- [x] **Task 2.5: Dialog Konfirmasi & Selesai Ujian**
   - Peringatan jumlah soal yang belum terjawab atau masih berstatus ragu-ragu sebelum submit akhir.
   - Fitur *auto-submit* ketika waktu habis (*timer runs out*).
 

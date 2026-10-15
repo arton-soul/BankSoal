@@ -2,14 +2,20 @@ package com.banksoalpro.app.core.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.banksoalpro.app.BankSoalApplication
 import com.banksoalpro.app.feature.billing.SubscriptionScreen
 import com.banksoalpro.app.feature.catalog.CatalogScreen
 import com.banksoalpro.app.feature.exam.ExamScreen
+import com.banksoalpro.app.feature.exam.ExamViewModel
 import com.banksoalpro.app.feature.home.HomeScreen
 import com.banksoalpro.app.feature.result.ResultScreen
 import com.banksoalpro.app.feature.review.ReviewScreen
@@ -65,8 +71,25 @@ fun AppNavGraph(
             )
         ) { backStackEntry ->
             val packageId = backStackEntry.arguments?.getString(Screen.Exam.ARG_PACKAGE_ID) ?: ""
+            val context = LocalContext.current
+            val app = context.applicationContext as BankSoalApplication
+
+            val examViewModel: ExamViewModel = viewModel(
+                key = "exam_${packageId}_${System.currentTimeMillis()}",
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        @Suppress("UNCHECKED_CAST")
+                        return ExamViewModel(
+                            examRepository = app.container.examRepository,
+                            packageRepository = app.container.packageRepository
+                        ) as T
+                    }
+                }
+            )
+
             ExamScreen(
                 packageId = packageId,
+                viewModel = examViewModel,
                 onFinishExam = { attemptId ->
                     navController.navigate(Screen.Result.createRoute(attemptId)) {
                         popUpTo(Screen.Home.route)
