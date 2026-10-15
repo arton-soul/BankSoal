@@ -93,11 +93,11 @@ Buka menu **Monetize > Products > In-App Products** dan **Subscriptions**:
 - Hubungkan aplikasi di konsol Google AdMob ke Google Play Store setelah listing dibuat.
 - Tambahkan baris `google.com, pub-4098008677804088, DIRECT, f08c47fec0942fa0` ke file `app-ads.txt` di domain web pengembang Anda.
 
-### Langkah 5: Unggah App Bundle & Jalankan Closed Testing
-1. Buka menu **Testing > Closed testing** (atau Internal testing).
-2. Buat rilis baru dan unggah file `app-release.aab`.
-3. Masukkan Release Notes (misal: *“Rilis perdana Bank Soal Pro: Simulasi CAT CPNS, UTBK, SMA & SMP”*).
-4. Review dan rilis ke penguji internal.
+### Langkah 5: Unggah App Bundle & Masukkan Catatan Rilis (Release Notes)
+1. Buka menu **Testing > Closed testing** (atau Internal testing / Production).
+2. Buat rilis baru dan unggah file `app-release.aab` yang berada di `app/build/outputs/bundle/release/app-release.aab`.
+3. Salin catatan rilis resmi yang telah disiapkan di file 👉 [`docs/RELEASE_NOTES.md`](file:///d:/Android/BankSoalPro/docs/RELEASE_NOTES.md) ke kolom **Release notes**.
+4. Review dan rilis ke penguji atau publik.
 
 ---
 
