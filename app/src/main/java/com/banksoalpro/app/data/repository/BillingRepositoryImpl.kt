@@ -82,9 +82,9 @@ class BillingRepositoryImpl(
             .setProductList(allProducts)
             .build()
 
-        billingClient.queryProductDetailsAsync(params) { billingResult, productDetailsList ->
+        billingClient.queryProductDetailsAsync(params) { billingResult, queryResult ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                productDetailsList.forEach { details ->
+                queryResult.productDetailsList.forEach { details ->
                     productDetailsMap[details.productId] = details
                 }
             }

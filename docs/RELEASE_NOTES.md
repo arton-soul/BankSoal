@@ -7,9 +7,38 @@ Dokumen ini berisi catatan rilis resmi untuk setiap versi aplikasi yang siap dis
 
 ---
 
-## 📌 Versi 1.0.0 (Build 1) - Rilis Perdana (Current Version)
+## 📌 Versi 1.0.1 (Build 2) - Rilis Produksi Play Store (Current Active Release)
 *Tanggal Rilis: Oktober 2026*  
 *Target Track: Internal Testing / Closed Testing / Production*
+
+### Bahasa Indonesia (`id-ID`)
+```text
+Pembaruan Bank Soal Pro v1.0.1:
+• Kepatuhan penuh Google Play: Dukungan API level 36 & Google Play Billing Library 8.0+.
+• Simulasi CAT resmi: CPNS SKD, PPPK, UTBK-SNBT, Kedinasan, SMA & SMP.
+• Fitur Anti-Hafal: Pengacakan opsi jawaban (A-E) dinamis tiap sesi ujian.
+• Skoring standar BKN (Passing Grade TWK/TIU/TKP) & UTBK.
+• Pembahasan lengkap dengan rumus KaTeX jernih.
+• Fitur ulasan Play Store & Kebijakan Privasi resmi.
+• 100% Offline Ready setelah paket diunduh.
+```
+
+### English (`en-US`)
+```text
+Bank Soal Pro v1.0.1 update:
+• Full Google Play compliance: Target API level 36 & Google Play Billing 8.0+.
+• Realistic CAT exam simulation: CPNS SKD, PPPK, UTBK-SNBT, Kedinasan, High & Middle School.
+• Anti-memorization engine: Dynamic answer choices randomization on every session.
+• Accurate official scoring: BKN Passing Grade & UTBK scoring rules.
+• In-depth explanations with KaTeX math rendering.
+• In-app Play Store review prompt & official Privacy Policy link.
+• 100% offline study ready.
+```
+
+---
+
+## 📌 Versi 1.0.0 (Build 1) - Rilis Awal
+*Tanggal Rilis: Oktober 2026*
 
 ### Bahasa Indonesia (`id-ID`)
 ```text
