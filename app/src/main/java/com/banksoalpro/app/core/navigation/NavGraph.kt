@@ -1,10 +1,12 @@
 package com.banksoalpro.app.core.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -33,12 +35,20 @@ fun AppNavGraph(
         modifier = modifier
     ) {
         composable(Screen.Home.route) {
+            val context = LocalContext.current
+            val app = context.applicationContext as BankSoalApplication
+            val userProfile by app.container.authRepository.currentUser.collectAsStateWithLifecycle(null)
+
             HomeScreen(
+                userProfile = userProfile,
                 onCategoryClick = { categoryId ->
                     navController.navigate(Screen.Catalog.createRoute(categoryId))
                 },
                 onNavigateToPremium = {
                     navController.navigate(Screen.Subscription.route)
+                },
+                onNavigateToProfile = {
+                    navController.navigate(Screen.Profile.route)
                 }
             )
         }
@@ -164,6 +174,27 @@ fun AppNavGraph(
                     navController.popBackStack()
                 }
             )
+        }
+
+        composable(Screen.Profile.route) {
+            val context = LocalContext.current
+            val app = context.applicationContext as BankSoalApplication
+
+            val profileViewModel: com.banksoalpro.app.feature.profile.ProfileViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        @Suppress("UNCHECKED_CAST")
+                        return com.banksoalpro.app.feature.profile.ProfileViewModel(
+                            authRepository = app.container.authRepository,
+                            entitlementRepository = app.container.entitlementRepository,
+                            syncManager = app.container.userDataSyncManager,
+                            database = app.container.database
+                        ) as T
+                    }
+                }
+            )
+
+            com.banksoalpro.app.feature.profile.ProfileScreen(viewModel = profileViewModel)
         }
 
         composable(Screen.Settings.route) {

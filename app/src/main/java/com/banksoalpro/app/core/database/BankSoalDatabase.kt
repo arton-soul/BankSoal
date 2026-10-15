@@ -6,23 +6,29 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.banksoalpro.app.core.common.AppConstants
+import com.banksoalpro.app.data.local.dao.BookmarkDao
 import com.banksoalpro.app.data.local.dao.ExamAttemptDao
 import com.banksoalpro.app.data.local.dao.ExamPackageDao
 import com.banksoalpro.app.data.local.dao.PassageDao
 import com.banksoalpro.app.data.local.dao.QuestionDao
+import com.banksoalpro.app.data.local.dao.UserAccountDao
+import com.banksoalpro.app.data.local.entity.BookmarkEntity
 import com.banksoalpro.app.data.local.entity.ExamAttemptEntity
 import com.banksoalpro.app.data.local.entity.ExamPackageEntity
 import com.banksoalpro.app.data.local.entity.PassageEntity
 import com.banksoalpro.app.data.local.entity.QuestionEntity
+import com.banksoalpro.app.data.local.entity.UserAccountEntity
 
 @Database(
     entities = [
         ExamPackageEntity::class,
         QuestionEntity::class,
         PassageEntity::class,
-        ExamAttemptEntity::class
+        ExamAttemptEntity::class,
+        BookmarkEntity::class,
+        UserAccountEntity::class
     ],
-    version = 1,
+    version = 3,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -32,6 +38,8 @@ abstract class BankSoalDatabase : RoomDatabase() {
     abstract fun questionDao(): QuestionDao
     abstract fun passageDao(): PassageDao
     abstract fun examAttemptDao(): ExamAttemptDao
+    abstract fun bookmarkDao(): BookmarkDao
+    abstract fun userAccountDao(): UserAccountDao
 
     companion object {
         @Volatile

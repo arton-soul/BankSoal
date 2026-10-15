@@ -14,6 +14,9 @@ interface ExamAttemptDao {
     @Query("SELECT * FROM exam_attempts ORDER BY startedAt DESC")
     fun getAllAttempts(): Flow<List<ExamAttemptEntity>>
 
+    @Query("SELECT * FROM exam_attempts ORDER BY startedAt DESC")
+    suspend fun getAllAttemptsSync(): List<ExamAttemptEntity>
+
     @Query("SELECT * FROM exam_attempts WHERE packageId = :packageId ORDER BY startedAt DESC")
     fun getAttemptsByPackageId(packageId: String): Flow<List<ExamAttemptEntity>>
 

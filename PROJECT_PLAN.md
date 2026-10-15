@@ -112,15 +112,14 @@ Dokumen ini memuat perencanaan kerja menyeluruh untuk membangun aplikasi **Bank 
 ### FASE 5: Akun Pengguna & Sinkronisasi Cloud
 **Tujuan:** Menjaga riwayat dan hak kepemilikan paket yang dibeli agar tidak hilang saat pengguna berganti perangkat.
 
-- [ ] **Task 5.1: Firebase Authentication (Google Sign-In)**
+- [x] **Task 5.1: Firebase Authentication (Google Sign-In)**
   - Tombol login sekali klik dengan akun Google.
   - Opsi *Masuk sebagai Tamu* (Guest) agar pengguna bisa mencoba tanpa hambatan registrasi.
-- [ ] **Task 5.2: Cloud Entitlement Record (Firestore / Database)**
-  - Tabel `user_entitlements`:
-    - `userId`
-    - `isPremiumUser: Boolean`
-    - `unlockedPackageIds: List<String>`
-    - `premiumExpiryDate: Timestamp?`
+- [x] **Task 5.2: Cloud Entitlement Record (Firestore / Database)**
+  - Tabel `user_entitlements` (disimpan persisten via `UserAccountEntity` di Room DB v3 dan disinkronkan ke Cloud Gateway).
+  - Profil pengguna (`userId`, `displayName`, `email`, `targetExamCategory`).
+  - Entitlement & Hak Akses (`isPremiumUser`, `unlockedPackageIds`, `premiumExpiryDate`, `lastSyncedAt`).
+  - Layar Profil pengguna (`ProfileScreen.kt`), bottom sheet prompt login (`LoginPromptBottomSheet.kt`), dan greeting personal di Beranda.
   - Sinkronisasi otomatis saat login berhasil.
 
 ---

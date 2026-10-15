@@ -142,3 +142,43 @@ private fun serializeAnswersMap(map: Map<String, String>): String {
     if (map.isEmpty()) return "{}"
     return "{" + map.entries.joinToString(";;;") { "${it.key}:::${it.value}" } + "}"
 }
+
+fun com.banksoalpro.app.data.local.entity.UserAccountEntity.toProfile(): com.banksoalpro.app.domain.model.UserProfile =
+    com.banksoalpro.app.domain.model.UserProfile(
+        userId = userId,
+        displayName = displayName,
+        email = email,
+        photoUrl = photoUrl,
+        isGuest = isGuest,
+        targetExamCategory = targetExamCategory
+    )
+
+fun com.banksoalpro.app.data.local.entity.UserAccountEntity.toEntitlement(): com.banksoalpro.app.domain.model.UserEntitlement =
+    com.banksoalpro.app.domain.model.UserEntitlement(
+        userId = userId,
+        isPremiumUser = isPremiumUser,
+        unlockedPackageIds = parseJsonStringList(unlockedPackageIdsJson),
+        premiumExpiryDate = premiumExpiryDate,
+        lastSyncedAt = lastSyncedAt
+    )
+
+fun parseJsonStringList(json: String): List<String> {
+    if (json.isBlank() || json == "[]") return emptyList()
+    return try {
+        val array = org.json.JSONArray(json)
+        val list = mutableListOf<String>()
+        for (i in 0 until array.length()) {
+            list.add(array.getString(i))
+        }
+        list
+    } catch (_: Exception) {
+        emptyList()
+    }
+}
+
+fun List<String>.toJsonString(): String {
+    val array = org.json.JSONArray()
+    forEach { array.put(it) }
+    return array.toString()
+}
+

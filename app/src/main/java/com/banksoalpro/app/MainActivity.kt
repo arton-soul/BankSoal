@@ -47,6 +47,7 @@ fun MainAppScaffold() {
     val bottomNavItems = listOf(
         BottomNavItem(Screen.Home.route, "Beranda", Icons.Default.Home),
         BottomNavItem(Screen.Subscription.route, "Premium", Icons.Default.WorkspacePremium),
+        BottomNavItem(Screen.Profile.route, "Profil", Icons.Default.AccountCircle),
         BottomNavItem(Screen.Settings.route, "Pengaturan", Icons.Default.Settings)
     )
 
@@ -54,6 +55,7 @@ fun MainAppScaffold() {
     val showBars = currentRoute in listOf(
         Screen.Home.route,
         Screen.Subscription.route,
+        Screen.Profile.route,
         Screen.Settings.route
     )
 
@@ -66,6 +68,7 @@ fun MainAppScaffold() {
                         Text(
                             text = when (currentRoute) {
                                 Screen.Subscription.route -> "Akses Premium"
+                                Screen.Profile.route -> "Profil & Cloud"
                                 Screen.Settings.route -> "Pengaturan"
                                 else -> "Bank Soal Pro"
                             },

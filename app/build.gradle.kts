@@ -81,6 +81,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.play.services.auth)
 
     testImplementation(libs.junit)
     testImplementation("org.json:json:20240303")

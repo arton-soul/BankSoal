@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.banksoalpro.app.core.ui.theme.*
+import com.banksoalpro.app.domain.model.UserProfile
 
 data class ExamCategory(
     val id: String,
@@ -79,8 +80,10 @@ val CATEGORIES = listOf(
 
 @Composable
 fun HomeScreen(
+    userProfile: UserProfile? = null,
     onCategoryClick: (String) -> Unit,
-    onNavigateToPremium: () -> Unit
+    onNavigateToPremium: () -> Unit,
+    onNavigateToProfile: () -> Unit = {}
 ) {
     LazyColumn(
         modifier = Modifier
@@ -89,6 +92,65 @@ fun HomeScreen(
         contentPadding = PaddingValues(top = 16.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        if (userProfile != null) {
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                        .clickable { onNavigateToProfile() }
+                        .padding(horizontal = 14.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(RoundedCornerShape(18.dp))
+                                .background(MaterialTheme.colorScheme.primary),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = userProfile.initial,
+                                color = PureWhite,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Column {
+                            Text(
+                                text = "Halo, ${userProfile.displayName}!",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = if (userProfile.isGuest) "Mode Tamu • Ketuk untuk sync" else "Cloud Sync Aktif",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+
+                    Surface(
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = userProfile.targetExamCategory.replace("_", " "),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                }
+            }
+        }
+
         item {
             // Header Banner
             Card(

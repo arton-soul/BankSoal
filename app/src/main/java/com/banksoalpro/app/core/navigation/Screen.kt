@@ -25,5 +25,7 @@ sealed class Screen(val route: String, val title: String) {
 
     object Subscription : Screen("subscription", "Akses Premium")
 
+    object Profile : Screen("profile", "Akun & Profil")
+
     object Settings : Screen("settings", "Pengaturan")
 }
