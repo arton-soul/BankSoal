@@ -152,5 +152,4 @@ Hubungi tim kami di: arton.79@gmail.com
      - ID Perangkat / ID Iklan: Digunakan oleh Google Mobile Ads SDK (AdMob) untuk personalisasi iklan.
      - Riwayat Pembelian: Dikelola langsung secara aman oleh Google Play Billing API.
    - **Enkripsi:** Semua data ditransmisikan melalui protokol aman HTTPS/TLS.
-   - **Penghapusan Akun:** Pengguna dapat keluar (Logout) atau meminta penghapusan riwayat data melalui kontak email pengembang.
-   - **Privacy Policy URL:** `https://arton-soul.github.io/BankSoal/privacy-policy.html` (atau link dokumen di repository GitHub).
+   - **Privacy Policy URL:** `https://dearyoti.blogspot.com/p/kebijakan-privasi-privacy-policy-bank.html`

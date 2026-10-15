@@ -87,6 +87,25 @@ fun SettingsScreen() {
             ) {
                 Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                     SettingItem(
+                        icon = Icons.Default.Star,
+                        title = "Beri Rating & Ulasan",
+                        subtitle = "Dukung kami dengan ulasan bintang 5 di Play Store",
+                        onClick = {
+                            com.banksoalpro.app.core.rating.AppRatingManager.openPlayStore(context)
+                        }
+                    )
+                    HorizontalDivider(color = Slate200, thickness = 0.5.dp)
+                    SettingItem(
+                        icon = Icons.Default.Security,
+                        title = "Kebijakan Privasi (Privacy Policy)",
+                        subtitle = "Baca kebijakan privasi resmi di Blogger",
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AppConstants.PRIVACY_POLICY_URL))
+                            context.startActivity(intent)
+                        }
+                    )
+                    HorizontalDivider(color = Slate200, thickness = 0.5.dp)
+                    SettingItem(
                         icon = Icons.Default.DeleteOutline,
                         title = "Bersihkan Cache Soal Offline",
                         subtitle = "Menghapus soal yang tersimpan di memori perangkat",

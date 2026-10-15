@@ -8,4 +8,7 @@ object AppConstants {
 
     // Default Seed & Database Config
     const val DATABASE_NAME = "banksoal_database"
+
+    // Privacy Policy URL (Blogger Official)
+    const val PRIVACY_POLICY_URL = "https://dearyoti.blogspot.com/p/kebijakan-privasi-privacy-policy-bank.html"
 }

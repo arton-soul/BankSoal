@@ -9,16 +9,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.banksoalpro.app.core.rating.AppRatingManager
 import com.banksoalpro.app.core.ui.theme.*
 import com.banksoalpro.app.domain.model.UserProfile
+import com.banksoalpro.app.feature.home.components.RatingPromptDialog
 
 data class ExamCategory(
     val id: String,
@@ -86,6 +89,30 @@ fun HomeScreen(
     onNavigateToPremium: () -> Unit,
     onNavigateToProfile: () -> Unit = {}
 ) {
+    val context = LocalContext.current
+    var showRatingDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        AppRatingManager.initFirstLaunch(context)
+        if (AppRatingManager.shouldShowRatingPrompt(context)) {
+            showRatingDialog = true
+        }
+    }
+
+    if (showRatingDialog) {
+        RatingPromptDialog(
+            onRateNow = {
+                AppRatingManager.openPlayStore(context)
+                AppRatingManager.markRatingPromptShown(context)
+                showRatingDialog = false
+            },
+            onDismiss = {
+                AppRatingManager.markRatingPromptShown(context)
+                showRatingDialog = false
+            }
+        )
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
