@@ -167,47 +167,15 @@ class ExamViewModel(
 
         viewModelScope.launch {
             val examPackage = packageRepository.getPackageById(state.packageId)
-            var totalScore = 0.0
-
-            // Hitung skor berdasarkan aturan penilaian tiap soal
-            state.questions.forEach { shuffled ->
-                val q = shuffled.question
-                val chosenOriginalKey = state.selectedAnswers[q.id]
-
-                if (chosenOriginalKey != null) {
-                    when (q.scoringType) {
-                        ScoringType.TKP_WEIGHTED -> {
-                            val matchedOption = shuffled.options.find { it.originalKey == chosenOriginalKey }
-                            totalScore += (matchedOption?.score ?: 0)
-                        }
-                        ScoringType.PENALTY -> {
-                            if (chosenOriginalKey.equals(q.correctAnswer, ignoreCase = true)) {
-                                totalScore += 4.0
-                            } else {
-                                totalScore -= 1.0
-                            }
-                        }
-                        ScoringType.STANDARD -> {
-                            if (chosenOriginalKey.equals(q.correctAnswer, ignoreCase = true)) {
-                                val point = if (q.scoreA > 0 || q.scoreB > 0 || q.scoreC > 0) {
-                                    when (chosenOriginalKey.uppercase()) {
-                                        "A" -> q.scoreA
-                                        "B" -> q.scoreB
-                                        "C" -> q.scoreC
-                                        "D" -> q.scoreD
-                                        "E" -> q.scoreE
-                                        else -> 5
-                                    }
-                                } else 5
-                                totalScore += point
-                            }
-                        }
-                    }
-                }
-            }
-
-            val passingScore = examPackage?.passingScore ?: 0
-            val isPassed = totalScore >= passingScore
+            val isCpns = examPackage?.categoryId?.contains("CPNS", ignoreCase = true) == true
+            val calculationResult = com.banksoalpro.app.domain.usecase.ExamScoreCalculator.calculate(
+                questions = state.questions,
+                userAnswers = state.selectedAnswers,
+                packagePassingScore = examPackage?.passingScore ?: 0,
+                isCpnsSkd = isCpns
+            )
+            val totalScore = calculationResult.totalScore
+            val isPassed = calculationResult.isPassed
             val now = System.currentTimeMillis()
             val totalSecondsSpent = ((now - examStartTimeMillis) / 1000).coerceAtLeast(1)
             val attemptId = UUID.randomUUID().toString()

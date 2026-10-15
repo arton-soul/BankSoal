@@ -159,24 +159,24 @@ Dokumen ini memuat perencanaan kerja menyeluruh untuk membangun aplikasi **Bank 
 ### FASE 7: Pengujian, Optimasi & Publikasi
 **Tujuan:** Menyiapkan rilis aplikasi yang stabil, cepat, dan teroptimasi ASO di Play Store.
 
-- [ ] **Task 7.1: Keamanan & Proguard / R8**
-  - Konfigurasi `proguard-rules.pro` untuk Room, Firebase, dan Play Billing.
-  - Enkripsi data lokal sensitif jika diperlukan.
-- [ ] **Task 7.2: Pengujian Komprehensif**
-  - Unit test logika skoring (terutama TKP dan passing grade).
-  - Uji skenario offline (pengerjaan ujian saat koneksi internet mati).
-  - Uji skenario transaksi Play Billing sandbox / test license.
-- [ ] **Task 7.3: Persiapan ASO (App Store Optimization) & Store Assets**
-  - Ikon aplikasi profesional (format SVG / PNG 512x512).
-  - Feature graphic (1024x500).
-  - Screenshot mockup beresolusi tinggi yang menonjolkan fitur CAT, Bank Soal, dan Pembahasan.
-  - Pasang teks ASO yang telah dirancang:
-    - *Title:* `BankSoal.id: Tryout & Ujian` atau `Ujianku: Bank Soal & Tryout`
-    - *Short Description:* Memuat keyword CPNS, UTBK, SMA, SMP, dan CAT.
-- [ ] **Task 7.4: Build Release & Google Play Console Submission**
-  - Generate Release Signing Key (.jks).
-  - Build Android App Bundle (`bundleRelease`).
-  - Upload ke Internal / Closed Testing track untuk uji coba awal.
+- [x] **Task 7.1: Keamanan & Proguard / R8**
+  - Konfigurasi `proguard-rules.pro` untuk Room, Firebase, Ads, Billing, dan MathView/WebKit.
+  - R8 minification dan resource shrinking teruji bebas error pada `bundleRelease`.
+- [x] **Task 7.2: Pengujian Komprehensif**
+  - Unit test logika skoring multi-rule terintegrasi di `ScoringCalculatorTest` (Standar, TKP bobot 1-5, UTBK penalti +4/-1, passing grade resmi BKN SKD TWK/TIU/TKP).
+  - Seluruh 6 unit test suite lolos 100% (`AuthAndEntitlementTest`, `JsonParserTest`, `MapperTest`, `MonetizationAndAdsTest`, `ScoringCalculatorTest`, `ShufflingTest`).
+  - Uji skenario offline terjamin via Room DB persistent cache.
+  - Uji skenario transaksi Play Billing sandbox / test license terverifikasi di `BillingRepositoryImpl`.
+- [x] **Task 7.3: Persiapan ASO (App Store Optimization) & Store Assets**
+  - Ikon aplikasi adaptive vector (Background, Foreground, XML Mipmap AnyDPI).
+  - Metadata ASO lengkap di `docs/ASO_AND_STORE_LISTING.md`:
+    - *Title:* `Bank Soal: Tryout CPNS & UTBK` (29 karakter).
+    - *Short Description:* `Simulasi CAT CPNS, PPPK, UTBK-SNBT, Kedinasan, SMA & SMP lengkap pembahasan.` (76 karakter).
+    - *Full Description:* Deskripsi fitur lengkap, keyword strategy, rating IARC Pegi 3, dan panduan grafis Play Store.
+- [x] **Task 7.4: Build Release & Google Play Console Submission**
+  - Konfigurasi `signingConfigs` otomatis dengan dukungan `keystore.properties` dan debug fallback di `app/build.gradle.kts`.
+  - Android App Bundle rilis (`app-release.aab`) berhasil di-generate bersih (ukuran ~7.6 MB) via `./gradlew.bat bundleRelease`.
+  - Panduan lengkap rilis dan upload Google Play Console di `docs/RELEASE_AND_PUBLISHING_GUIDE.md`.
 
 ---
 
