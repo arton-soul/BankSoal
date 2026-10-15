@@ -7,34 +7,34 @@ Dokumen ini memandu proses pembuatan signing key rilis, build Android App Bundle
 
 ---
 
-## 1. Pembuatan Release Signing Keystore (.jks)
+## 1. Informasi Keystore Rilis Resmi (.jks)
 
-Untuk mempublikasikan aplikasi ke Google Play Store, Anda memerlukan keystore rilis pribadi.
-
-### Jalankan perintah `keytool` melalui terminal:
-```bash
-keytool -genkey -v -keystore release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias banksoal
-```
-
-> [!CAUTION]
-> **PENTING:** Simpan file `release-key.jks` dan catat password keystore di tempat yang aman (misalnya password manager). Jangan mengunggah file `.jks` ke GitHub publik. File `.jks` sudah otomatis terdaftar di `.gitignore`.
+Keystore rilis resmi telah dibuat dan disimpan di lokasi terdedikasi sesuai kriteria pengembang:
+- **Lokasi Keystore:** `D:\Android\Keystore\BankSoalPro\banksoalpro.jks`
+- **Developer Name (CN):** `dearyoti`
+- **Masa Aktif:** 100 Tahun (Valid hingga 21 September 2126)
+- **Key Algorithm & Size:** RSA 2048-bit (SHA256withRSA)
+- **Alias:** `banksoal`
+- **Password Keystore:** `banksoal`
+- **Password Key/Alias:** `banksoal`
+- **SHA-256 Fingerprint:** `1F:DF:60:D1:B2:A2:26:18:92:FE:14:74:06:8D:40:97:FA:A0:8B:D2:86:1F:12:5B:30:94:4C:76:B1:77:A7:06`
+- **SHA-1 Fingerprint:** `47:0F:A2:0A:37:68:54:04:C0:45:9C:C0:09:E5:D2:07:7E:A9:6C:7C`
 
 ---
 
 ## 2. Konfigurasi `keystore.properties`
 
-Buat file baru bernama `keystore.properties` di root folder proyek (`d:\Android\BankSoalPro\keystore.properties`) dengan format:
+File konfigurasi `keystore.properties` telah disiapkan di root proyek (`d:\Android\BankSoalPro\keystore.properties`):
 
 ```properties
-storeFile=release-key.jks
-storePassword=PASSWORD_KEYSTORE_ANDA
+storeFile=D:/Android/Keystore/BankSoalPro/banksoalpro.jks
+storePassword=banksoal
 keyAlias=banksoal
-keyPassword=PASSWORD_KEY_ANDA
+keyPassword=banksoal
 ```
 
-Sistem Gradle di `app/build.gradle.kts` telah dikonfigurasi untuk:
-- Otomatis mendeteksi `keystore.properties` jika tersedia dan menandatangani build rilis dengan kunci resmi tersebut.
-- Otomatis fallback ke signing debug jika file ini belum ada (sehingga pengujian lokal atau CI tetap berjalan lancar tanpa error).
+> [!NOTE]
+> File `keystore.properties` dan file `*.jks` telah otomatis terdaftar di `.gitignore` sehingga tidak akan terunggah ke repositori Git publik demi keamanan kredensial.
 
 ---
 
