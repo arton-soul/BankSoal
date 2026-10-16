@@ -9,6 +9,7 @@ interface ExamRepository {
     fun getQuestionsByPackageId(packageId: String): Flow<List<Question>>
     suspend fun getQuestionsListByPackageId(packageId: String): List<Question>
     suspend fun getPassageById(passageId: String): Passage?
+    suspend fun getPassagesByIds(passageIds: List<String>): Map<String, Passage>
     suspend fun saveQuestions(questions: List<Question>)
     suspend fun savePassages(passages: List<Passage>)
 

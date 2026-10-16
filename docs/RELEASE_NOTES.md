@@ -7,7 +7,33 @@ Dokumen ini berisi catatan rilis resmi untuk setiap versi aplikasi yang siap dis
 
 ---
 
-## 📌 Versi 1.0.1 (Build 2) - Rilis Produksi Play Store (Current Active Release)
+## 📌 Versi 1.0.2 (Build 3) - Optimalisasi Performa & Simulasi CAT Instan (Current Active Release)
+*Tanggal Rilis: Oktober 2026*  
+*Target Track: Internal Testing / Closed Testing / Production*
+
+### Bahasa Indonesia (`id-ID`)
+```text
+Pembaruan Bank Soal Pro v1.0.2:
+• Peningkatan drastis kecepatan pemuatan simulasi ujian CAT di perangkat fisik (kini terbuka instan tanpa delay).
+• Optimalisasi query database & batch prefetching untuk soal wacana panjang.
+• Stabilisasi siklus hidup ujian saat navigasi dan rotasi layar.
+• Transaksi atomic database saat inisialisasi paket latihan offline.
+• Peningkatan responsivitas navigasi lembar nomor soal CAT.
+```
+
+### English (`en-US`)
+```text
+Bank Soal Pro v1.0.2 update:
+• Drastic performance optimization: CAT exam simulation now loads instantly on physical devices without delay.
+• Optimized database queries & batch prefetching for long reading passages.
+• Stabilized exam session lifecycle during navigation and device orientation changes.
+• Atomic database transactions for faster initial offline package setup.
+• Smoother exam grid sheet navigation and UI responsiveness.
+```
+
+---
+
+## 📌 Versi 1.0.1 (Build 2) - Rilis Produksi Play Store
 *Tanggal Rilis: Oktober 2026*  
 *Target Track: Internal Testing / Closed Testing / Production*
 

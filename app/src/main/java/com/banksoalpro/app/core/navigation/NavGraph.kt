@@ -112,13 +112,15 @@ fun AppNavGraph(
             val app = context.applicationContext as BankSoalApplication
 
             val examViewModel: ExamViewModel = viewModel(
-                key = "exam_${packageId}_${System.currentTimeMillis()}",
+                viewModelStoreOwner = backStackEntry,
+                key = "exam_${backStackEntry.id}",
                 factory = object : ViewModelProvider.Factory {
                     override fun <T : ViewModel> create(modelClass: Class<T>): T {
                         @Suppress("UNCHECKED_CAST")
                         return ExamViewModel(
                             examRepository = app.container.examRepository,
-                            packageRepository = app.container.packageRepository
+                            packageRepository = app.container.packageRepository,
+                            syncManager = app.container.syncManager
                         ) as T
                     }
                 }

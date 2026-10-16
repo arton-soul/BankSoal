@@ -28,6 +28,11 @@ class ExamRepositoryImpl(
         return passageDao.getPassageById(passageId)?.toDomain()
     }
 
+    override suspend fun getPassagesByIds(passageIds: List<String>): Map<String, Passage> {
+        if (passageIds.isEmpty()) return emptyMap()
+        return passageDao.getPassagesByIds(passageIds).associate { it.id to it.toDomain() }
+    }
+
     override suspend fun saveQuestions(questions: List<Question>) {
         questionDao.insertQuestions(questions.map { it.toEntity() })
     }

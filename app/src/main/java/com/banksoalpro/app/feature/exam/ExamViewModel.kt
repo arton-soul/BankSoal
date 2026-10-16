@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.banksoalpro.app.domain.model.*
 import com.banksoalpro.app.domain.repository.ExamRepository
 import com.banksoalpro.app.domain.repository.PackageRepository
+import com.banksoalpro.app.data.remote.sync.ContentSyncManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,11 +14,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.UUID
 
 class ExamViewModel(
     private val examRepository: ExamRepository,
-    private val packageRepository: PackageRepository
+    private val packageRepository: PackageRepository,
+    private val syncManager: ContentSyncManager? = null
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ExamUiState())
@@ -26,53 +30,81 @@ class ExamViewModel(
     private var examStartTimeMillis: Long = 0L
 
     fun initExam(packageId: String) {
+        // Jangan reload jika paket ujian yang sama sudah berhasil dimuat
+        if (_uiState.value.packageId == packageId && _uiState.value.questions.isNotEmpty() && !_uiState.value.isLoading) {
+            return
+        }
+
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
             try {
-                val examPackage = packageRepository.getPackageById(packageId)
-                val questionsList = examRepository.getQuestionsListByPackageId(packageId)
+                withContext(Dispatchers.IO) {
+                    var examPackage = packageRepository.getPackageById(packageId)
+                    var questionsList = examRepository.getQuestionsListByPackageId(packageId)
 
-                if (examPackage == null || questionsList.isEmpty()) {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = "Paket soal tidak ditemukan atau belum memiliki butir soal."
-                        )
+                    // Jika belum ada di database, coba seed dari assets secara instan
+                    if (examPackage == null || questionsList.isEmpty()) {
+                        syncManager?.seedPackageFromAssetIfMissing(packageId)
+                        examPackage = packageRepository.getPackageById(packageId)
+                        questionsList = examRepository.getQuestionsListByPackageId(packageId)
                     }
-                    return@launch
+
+                    if (examPackage == null || questionsList.isEmpty()) {
+                        withContext(Dispatchers.Main) {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    errorMessage = "Paket soal tidak ditemukan atau belum memiliki butir soal."
+                                )
+                            }
+                        }
+                        return@withContext
+                    }
+
+                    // Ambil seluruh passage unik dalam 1 query batch (hindari N+1 query database)
+                    val uniquePassageIds = questionsList.mapNotNull { it.passageId }.distinct()
+                    val passageMap = if (uniquePassageIds.isNotEmpty()) {
+                        examRepository.getPassagesByIds(uniquePassageIds)
+                    } else {
+                        emptyMap()
+                    }
+
+                    // Acak opsi jawaban per soal di background thread (Dispatchers.Default)
+                    val shuffledQuestions = withContext(Dispatchers.Default) {
+                        questionsList.map { question ->
+                            val passage = question.passageId?.let { passageMap[it] }
+                            question.toShuffled(passage)
+                        }
+                    }
+
+                    val totalSeconds = (examPackage.durationMinutes * 60).toLong()
+                    examStartTimeMillis = System.currentTimeMillis()
+
+                    withContext(Dispatchers.Main) {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                packageId = examPackage.id,
+                                packageTitle = examPackage.title,
+                                subCategory = examPackage.subCategory,
+                                questions = shuffledQuestions,
+                                currentIndex = 0,
+                                totalDurationMinutes = examPackage.durationMinutes,
+                                remainingSeconds = totalSeconds,
+                                selectedAnswers = emptyMap(),
+                                selectedDisplayLabels = emptyMap(),
+                                flaggedQuestionIds = emptySet(),
+                                isTimeUp = false,
+                                isSubmitDialogOpen = false,
+                                isGridSheetOpen = false,
+                                isPassageExpanded = false,
+                                completedAttemptId = null
+                            )
+                        }
+
+                        startTimer(totalSeconds)
+                    }
                 }
-
-                // Acak opsi jawaban per soal untuk sesi ujian baru ini
-                val shuffledQuestions = questionsList.map { question ->
-                    val passage = question.passageId?.let { examRepository.getPassageById(it) }
-                    question.toShuffled(passage)
-                }
-
-                val totalSeconds = (examPackage.durationMinutes * 60).toLong()
-                examStartTimeMillis = System.currentTimeMillis()
-
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        packageId = examPackage.id,
-                        packageTitle = examPackage.title,
-                        subCategory = examPackage.subCategory,
-                        questions = shuffledQuestions,
-                        currentIndex = 0,
-                        totalDurationMinutes = examPackage.durationMinutes,
-                        remainingSeconds = totalSeconds,
-                        selectedAnswers = emptyMap(),
-                        selectedDisplayLabels = emptyMap(),
-                        flaggedQuestionIds = emptySet(),
-                        isTimeUp = false,
-                        isSubmitDialogOpen = false,
-                        isGridSheetOpen = false,
-                        isPassageExpanded = false,
-                        completedAttemptId = null
-                    )
-                }
-
-                startTimer(totalSeconds)
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
@@ -166,33 +198,41 @@ class ExamViewModel(
         if (state.questions.isEmpty()) return
 
         viewModelScope.launch {
-            val examPackage = packageRepository.getPackageById(state.packageId)
-            val isCpns = examPackage?.categoryId?.contains("CPNS", ignoreCase = true) == true
-            val calculationResult = com.banksoalpro.app.domain.usecase.ExamScoreCalculator.calculate(
-                questions = state.questions,
-                userAnswers = state.selectedAnswers,
-                packagePassingScore = examPackage?.passingScore ?: 0,
-                isCpnsSkd = isCpns
-            )
-            val totalScore = calculationResult.totalScore
-            val isPassed = calculationResult.isPassed
-            val now = System.currentTimeMillis()
-            val totalSecondsSpent = ((now - examStartTimeMillis) / 1000).coerceAtLeast(1)
-            val attemptId = UUID.randomUUID().toString()
+            val (attemptId, _) = withContext(Dispatchers.Default) {
+                val examPackage = withContext(Dispatchers.IO) {
+                    packageRepository.getPackageById(state.packageId)
+                }
+                val isCpns = examPackage?.categoryId?.contains("CPNS", ignoreCase = true) == true
+                val calculationResult = com.banksoalpro.app.domain.usecase.ExamScoreCalculator.calculate(
+                    questions = state.questions,
+                    userAnswers = state.selectedAnswers,
+                    packagePassingScore = examPackage?.passingScore ?: 0,
+                    isCpnsSkd = isCpns
+                )
+                val totalScore = calculationResult.totalScore
+                val isPassed = calculationResult.isPassed
+                val now = System.currentTimeMillis()
+                val totalSecondsSpent = ((now - examStartTimeMillis) / 1000).coerceAtLeast(1)
+                val newAttemptId = UUID.randomUUID().toString()
 
-            val attempt = ExamAttempt(
-                attemptId = attemptId,
-                packageId = state.packageId,
-                startedAt = examStartTimeMillis,
-                finishedAt = now,
-                timeSpentSeconds = totalSecondsSpent,
-                totalScore = totalScore,
-                isPassed = isPassed,
-                userAnswers = state.selectedAnswers,
-                isSubmitted = true
-            )
+                val attempt = ExamAttempt(
+                    attemptId = newAttemptId,
+                    packageId = state.packageId,
+                    startedAt = examStartTimeMillis,
+                    finishedAt = now,
+                    timeSpentSeconds = totalSecondsSpent,
+                    totalScore = totalScore,
+                    isPassed = isPassed,
+                    userAnswers = state.selectedAnswers,
+                    isSubmitted = true
+                )
 
-            examRepository.saveAttempt(attempt)
+                withContext(Dispatchers.IO) {
+                    examRepository.saveAttempt(attempt)
+                }
+
+                Pair(newAttemptId, isPassed)
+            }
 
             _uiState.update {
                 it.copy(

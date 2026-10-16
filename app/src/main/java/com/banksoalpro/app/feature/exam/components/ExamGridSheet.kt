@@ -82,7 +82,10 @@ fun ExamGridModalSheet(
                     .fillMaxWidth()
                     .heightIn(max = 380.dp)
             ) {
-                itemsIndexed(state.questions) { index, shuffled ->
+                itemsIndexed(
+                    items = state.questions,
+                    key = { _, shuffled -> shuffled.question.id }
+                ) { index, shuffled ->
                     val qId = shuffled.question.id
                     val isCurrent = index == state.currentIndex
                     val isFlagged = state.isFlagged(qId)

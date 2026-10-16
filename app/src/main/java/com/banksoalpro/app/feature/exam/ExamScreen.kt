@@ -29,7 +29,7 @@ fun ExamScreen(
     val state by viewModel.uiState.collectAsState()
 
     // Load soal saat pertama kali dibuka
-    LaunchedEffect(packageId) {
+    LaunchedEffect(viewModel, packageId) {
         viewModel.initExam(packageId)
     }
 

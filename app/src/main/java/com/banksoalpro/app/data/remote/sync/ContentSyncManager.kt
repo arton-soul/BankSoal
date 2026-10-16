@@ -1,6 +1,7 @@
 package com.banksoalpro.app.data.remote.sync
 
 import android.content.Context
+import androidx.room.withTransaction
 import com.banksoalpro.app.core.common.AppConstants
 import com.banksoalpro.app.core.database.BankSoalDatabase
 import com.banksoalpro.app.data.local.entity.ExamPackageEntity
@@ -27,25 +28,61 @@ class ContentSyncManager(
         val questionDao = database.questionDao()
 
         val existing = packageDao.getPackageById("cpns_skd_free_01")
-        if (existing == null) {
+        val existingQuestionsCount = questionDao.getQuestionCountByPackageId("cpns_skd_free_01")
+        if (existing == null || existingQuestionsCount == 0) {
             try {
                 val assetManager = context.assets
                 val files = assetManager.list("seed/packages") ?: emptyArray()
 
-                for (filename in files) {
-                    if (filename.endsWith(".json")) {
-                        val jsonString = assetManager.open("seed/packages/$filename").bufferedReader().use { it.readText() }
-                        val fullPackageDto = ExamJsonParser.parseFullPackage(jsonString)
-                        val (pkg, passages, questions) = ExamJsonParser.toEntities(fullPackageDto)
+                database.withTransaction {
+                    for (filename in files) {
+                        if (filename.endsWith(".json")) {
+                            val jsonString = assetManager.open("seed/packages/$filename").bufferedReader().use { it.readText() }
+                            val fullPackageDto = ExamJsonParser.parseFullPackage(jsonString)
+                            val (pkg, passages, questions) = ExamJsonParser.toEntities(fullPackageDto)
 
-                        packageDao.insertPackage(pkg.copy(isDownloaded = true))
-                        if (passages.isNotEmpty()) passageDao.insertPassages(passages)
-                        if (questions.isNotEmpty()) questionDao.insertQuestions(questions)
+                            packageDao.insertPackage(pkg.copy(isDownloaded = true))
+                            if (passages.isNotEmpty()) passageDao.insertPassages(passages)
+                            if (questions.isNotEmpty()) questionDao.insertQuestions(questions)
+                        }
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+    }
+
+    /**
+     * Memastikan satu paket tertentu terisi dari assets jika belum ada di database lokal
+     */
+    suspend fun seedPackageFromAssetIfMissing(packageId: String): Boolean = withContext(Dispatchers.IO) {
+        val packageDao = database.examPackageDao()
+        val passageDao = database.passageDao()
+        val questionDao = database.questionDao()
+
+        val existingPkg = packageDao.getPackageById(packageId)
+        val questionCount = questionDao.getQuestionCountByPackageId(packageId)
+        if (existingPkg != null && questionCount > 0) {
+            return@withContext true
+        }
+
+        try {
+            val assetManager = context.assets
+            val assetFileName = "seed/packages/$packageId.json"
+            val jsonString = assetManager.open(assetFileName).bufferedReader().use { it.readText() }
+            val fullPackageDto = ExamJsonParser.parseFullPackage(jsonString)
+            val (pkg, passages, questions) = ExamJsonParser.toEntities(fullPackageDto)
+
+            database.withTransaction {
+                packageDao.insertPackage(pkg.copy(isDownloaded = true))
+                if (passages.isNotEmpty()) passageDao.insertPassages(passages)
+                if (questions.isNotEmpty()) questionDao.insertQuestions(questions)
+            }
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
         }
     }
 
