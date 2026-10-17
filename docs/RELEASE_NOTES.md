@@ -7,7 +7,33 @@ Dokumen ini berisi catatan rilis resmi untuk setiap versi aplikasi yang siap dis
 
 ---
 
-## 📌 Versi 1.0.2 (Build 3) - Optimalisasi Performa & Simulasi CAT Instan (Current Active Release)
+## 📌 Versi 1.0.3 (Build 4) - Fitur Pembahasan Soal Penuh & Manajemen Paket PRO (Current Active Release)
+*Tanggal Rilis: Oktober 2026*  
+*Target Track: Internal Testing / Closed Testing / Production*
+
+### Bahasa Indonesia (`id-ID`)
+```text
+Pembaruan Bank Soal Pro v1.0.3:
+• Layar Pembahasan Soal Lengkap: Kunci jawaban resmi, analisis materi mendalam, dan filter soal (Semua, Benar, Salah, Kosong).
+• Tab Paket Soal Saya: Daftar paket yang dibeli atau aktif via PRO kini tampil rapi di profil dan siap langsung dikerjakan.
+• Penambahan Paket Tryout PRO: Paket intensif SKD CPNS & UTBK-SNBT 2026.
+• Kemudahan Masuk Akun Google: Opsi masuk dengan alamat email langsung tanpa hambatan.
+• Optimalisasi performa dan kestabilan aplikasi.
+```
+
+### English (`en-US`)
+```text
+Bank Soal Pro v1.0.3 update:
+• Full Exam Review & Explanations: Official answer keys, in-depth question analysis, and smart filters (All, Correct, Wrong, Unanswered).
+• My Purchased Packages: Accessible directly from Profile with one-click exam launch.
+• New PRO Exam Packages: Intensive CPNS SKD & UTBK-SNBT 2026 packs.
+• Enhanced Google Account Sign-In: Direct email entry support.
+• Performance and stability enhancements.
+```
+
+---
+
+## 📌 Versi 1.0.2 (Build 3) - Optimalisasi Performa & Simulasi CAT Instan
 *Tanggal Rilis: Oktober 2026*  
 *Target Track: Internal Testing / Closed Testing / Production*
 

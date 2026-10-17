@@ -9,6 +9,9 @@ import com.banksoalpro.app.domain.model.UserEntitlement
 import com.banksoalpro.app.domain.model.UserProfile
 import com.banksoalpro.app.domain.repository.AuthRepository
 import com.banksoalpro.app.domain.repository.EntitlementRepository
+import com.banksoalpro.app.data.repository.toDomain
+import com.banksoalpro.app.domain.model.ExamPackage
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -36,6 +39,10 @@ class ProfileViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UserEntitlement(userId = ""))
 
     val syncState: StateFlow<CloudSyncState> = syncManager.syncState
+
+    val allPackages: StateFlow<List<ExamPackage>> = database.examPackageDao().getAllPackages()
+        .map { list -> list.map { it.toDomain() } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _stats = MutableStateFlow(UserExamStats())
     val stats: StateFlow<UserExamStats> = _stats.asStateFlow()

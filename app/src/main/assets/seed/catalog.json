@@ -71,6 +71,34 @@
       "priceIdr": 0,
       "version": 1,
       "downloadUrl": "packages/kedinasan_sample_01.json"
+    },
+    {
+      "id": "cpns_skd_pro_01",
+      "categoryId": "CPNS",
+      "subCategory": "SKD CPNS - Paket PRO",
+      "title": "Tryout Intensif SKD CPNS 2026 (Paket PRO)",
+      "description": "Paket tryout mendalam TWK, TIU, dan TKP standar seleksi BKN resmi dengan pembahasan lengkap.",
+      "totalQuestions": 10,
+      "durationMinutes": 15,
+      "passingScore": 311,
+      "isFree": false,
+      "priceIdr": 29000,
+      "version": 1,
+      "downloadUrl": "packages/cpns_skd_pro_01.json"
+    },
+    {
+      "id": "utbk_snbt_pro_01",
+      "categoryId": "UTBK",
+      "subCategory": "TPS & Literasi - Paket PRO",
+      "title": "Master Simulasi UTBK-SNBT 2026 (Paket PRO)",
+      "description": "Latihan penalaran matematika, pemahaman bacaan, dan literasi analitis standar seleksi perguruan tinggi negeri.",
+      "totalQuestions": 6,
+      "durationMinutes": 12,
+      "passingScore": 680,
+      "isFree": false,
+      "priceIdr": 39000,
+      "version": 1,
+      "downloadUrl": "packages/utbk_snbt_pro_01.json"
     }
   ]
 }

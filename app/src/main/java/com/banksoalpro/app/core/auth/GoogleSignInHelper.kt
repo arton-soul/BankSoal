@@ -27,6 +27,16 @@ object GoogleSignInHelper {
             } else {
                 Result.failure(Exception("Akun Google tidak ditemukan"))
             }
+        } catch (e: ApiException) {
+            val friendlyMsg = when (e.statusCode) {
+                10 -> "Developer Error (10): SHA-1 keystore belum didaftarkan di Google Cloud Console. Silakan gunakan opsi masuk manual."
+                12500 -> "Sign In Failed (12500): Layanan Google Play tidak dapat terhubung. Coba gunakan opsi email manual."
+                12501 -> "Login Google dibatalkan oleh pengguna."
+                12502 -> "Sedang dalam proses sign-in."
+                7 -> "Koneksi jaringan terputus (Network Error)."
+                else -> "Gagal (Kode ${e.statusCode}): ${e.localizedMessage ?: "Terjadi kendala Google Play Services"}"
+            }
+            Result.failure(Exception(friendlyMsg))
         } catch (e: Exception) {
             Result.failure(e)
         }

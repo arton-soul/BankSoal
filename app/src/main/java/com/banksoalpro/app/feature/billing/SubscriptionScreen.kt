@@ -2,6 +2,7 @@ package com.banksoalpro.app.feature.billing
 
 import android.app.Activity
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -312,7 +313,7 @@ fun SubscriptionScreen(
         }
 
         items(viewModel.inAppProducts) { product ->
-            val isUnlocked = entitlement.unlockedPackageIds.contains(product.id)
+            val isUnlocked = entitlement.unlockedPackageIds.contains(product.id) || entitlement.isPremiumUser
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(14.dp),
@@ -372,6 +373,43 @@ fun SubscriptionScreen(
                         ) {
                             Text("Beli")
                         }
+                    }
+                }
+            }
+        }
+
+        // Info Box: Di mana paket yang dibeli dapat ditemukan
+        item {
+            Card(
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = Navy50),
+                border = BorderStroke(1.dp, Navy100),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier.padding(14.dp),
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = null,
+                        tint = Navy700,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Column {
+                        Text(
+                            text = "Di Mana Paket yang Dibeli Dapat Ditemukan?",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Navy900
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Semua paket yang Anda beli atau aktifkan via langganan PRO otomatis terbuka di menu Beranda (Katalog Soal) pada kategori masing-masing tanpa tanda gembok, dan juga dapat langsung dikerjakan melalui menu Profil di tab 'Paket Soal Saya'.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Navy800
+                        )
                     }
                 }
             }

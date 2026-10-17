@@ -178,8 +178,26 @@ fun AppNavGraph(
             )
         ) { backStackEntry ->
             val attemptId = backStackEntry.arguments?.getString(Screen.Review.ARG_ATTEMPT_ID) ?: ""
+            val context = LocalContext.current
+            val app = context.applicationContext as BankSoalApplication
+
+            val reviewViewModel: com.banksoalpro.app.feature.review.ReviewViewModel = viewModel(
+                viewModelStoreOwner = backStackEntry,
+                key = "review_${backStackEntry.id}",
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        @Suppress("UNCHECKED_CAST")
+                        return com.banksoalpro.app.feature.review.ReviewViewModel(
+                            examRepository = app.container.examRepository,
+                            packageRepository = app.container.packageRepository
+                        ) as T
+                    }
+                }
+            )
+
             ReviewScreen(
                 attemptId = attemptId,
+                viewModel = reviewViewModel,
                 onBackClick = {
                     navController.popBackStack()
                 }
@@ -228,7 +246,12 @@ fun AppNavGraph(
                 }
             )
 
-            com.banksoalpro.app.feature.profile.ProfileScreen(viewModel = profileViewModel)
+            com.banksoalpro.app.feature.profile.ProfileScreen(
+                viewModel = profileViewModel,
+                onPackageClick = { packageId ->
+                    navController.navigate(Screen.Exam.createRoute(packageId))
+                }
+            )
         }
 
         composable(Screen.Settings.route) {

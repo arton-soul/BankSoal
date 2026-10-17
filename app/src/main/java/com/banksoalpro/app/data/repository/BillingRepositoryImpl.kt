@@ -178,12 +178,12 @@ class BillingRepositoryImpl(
             }
             AppBillingProduct.CpnsMaster.id -> {
                 entitlementRepository.unlockPackage(userId, "cpns_skd_free_01")
-                entitlementRepository.unlockPackage(userId, "cpns_skd_sample_02")
+                entitlementRepository.unlockPackage(userId, "cpns_skd_pro_01")
                 entitlementRepository.unlockPackage(userId, "pkg_cpns_master_2026")
             }
             AppBillingProduct.UtbkLengkap.id -> {
                 entitlementRepository.unlockPackage(userId, "utbk_snbt_free_01")
-                entitlementRepository.unlockPackage(userId, "utbk_snbt_sample_02")
+                entitlementRepository.unlockPackage(userId, "utbk_snbt_pro_01")
                 entitlementRepository.unlockPackage(userId, "pkg_utbk_lengkap_2026")
             }
             AppBillingProduct.SmaSmpAll.id -> {

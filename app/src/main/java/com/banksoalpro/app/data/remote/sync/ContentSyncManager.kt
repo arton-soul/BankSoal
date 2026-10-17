@@ -27,16 +27,18 @@ class ContentSyncManager(
         val passageDao = database.passageDao()
         val questionDao = database.questionDao()
 
-        val existing = packageDao.getPackageById("cpns_skd_free_01")
-        val existingQuestionsCount = questionDao.getQuestionCountByPackageId("cpns_skd_free_01")
-        if (existing == null || existingQuestionsCount == 0) {
-            try {
-                val assetManager = context.assets
-                val files = assetManager.list("seed/packages") ?: emptyArray()
+        try {
+            val assetManager = context.assets
+            val files = assetManager.list("seed/packages") ?: emptyArray()
 
-                database.withTransaction {
-                    for (filename in files) {
-                        if (filename.endsWith(".json")) {
+            database.withTransaction {
+                for (filename in files) {
+                    if (filename.endsWith(".json")) {
+                        val packageId = filename.removeSuffix(".json")
+                        val existingPkg = packageDao.getPackageById(packageId)
+                        val questionCount = questionDao.getQuestionCountByPackageId(packageId)
+
+                        if (existingPkg == null || questionCount == 0) {
                             val jsonString = assetManager.open("seed/packages/$filename").bufferedReader().use { it.readText() }
                             val fullPackageDto = ExamJsonParser.parseFullPackage(jsonString)
                             val (pkg, passages, questions) = ExamJsonParser.toEntities(fullPackageDto)
@@ -47,9 +49,9 @@ class ContentSyncManager(
                         }
                     }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

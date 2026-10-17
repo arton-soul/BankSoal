@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -34,6 +35,7 @@ import java.util.Locale
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel,
+    onPackageClick: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -41,29 +43,32 @@ fun ProfileScreen(
     val entitlement by viewModel.currentEntitlement.collectAsStateWithLifecycle()
     val syncState by viewModel.syncState.collectAsStateWithLifecycle()
     val stats by viewModel.stats.collectAsStateWithLifecycle()
+    val allPackages by viewModel.allPackages.collectAsStateWithLifecycle()
 
     var showSignOutDialog by remember { mutableStateOf(false) }
+    var showManualEmailDialog by remember { mutableStateOf(false) }
+    var manualEmailInput by remember { mutableStateOf("arton.79@gmail.com") }
+    var manualNameInput by remember { mutableStateOf("Arton Soul") }
 
     // Google Sign-In launcher
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val parseResult = GoogleSignInHelper.parseSignInResult(result.data)
-            parseResult.fold(
-                onSuccess = { account ->
-                    viewModel.signInWithGoogle(
-                        displayName = account.displayName ?: "Pengguna Google",
-                        email = account.email ?: "",
-                        photoUrl = account.photoUrl?.toString()
-                    )
-                    Toast.makeText(context, "Selamat datang, ${account.displayName}!", Toast.LENGTH_SHORT).show()
-                },
-                onFailure = { error ->
-                    Toast.makeText(context, "Login Google gagal: ${error.message}", Toast.LENGTH_LONG).show()
-                }
-            )
-        }
+        val parseResult = GoogleSignInHelper.parseSignInResult(result.data)
+        parseResult.fold(
+            onSuccess = { account ->
+                viewModel.signInWithGoogle(
+                    displayName = account.displayName ?: "Pengguna Google",
+                    email = account.email ?: "",
+                    photoUrl = account.photoUrl?.toString()
+                )
+                Toast.makeText(context, "Selamat datang, ${account.displayName}!", Toast.LENGTH_SHORT).show()
+            },
+            onFailure = { error ->
+                Toast.makeText(context, error.message ?: "Login Google gagal", Toast.LENGTH_LONG).show()
+                showManualEmailDialog = true
+            }
+        )
     }
 
     LaunchedEffect(syncState) {
@@ -224,21 +229,16 @@ fun ProfileScreen(
                             Text("Masuk dengan Akun Google")
                         }
 
-                        // Demo fallback button for sandbox / JVM testing
+                        // Opsi Masuk Cepat / Manual Email
                         OutlinedButton(
-                            onClick = {
-                                viewModel.signInWithGoogle(
-                                    displayName = "Arton Soul",
-                                    email = "arton.79@gmail.com",
-                                    photoUrl = null
-                                )
-                                Toast.makeText(context, "Masuk sebagai arton.79@gmail.com", Toast.LENGTH_SHORT).show()
-                            },
+                            onClick = { showManualEmailDialog = true },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 8.dp)
                         ) {
-                            Text("Masuk Akun Pengujian (arton.79@gmail.com)")
+                            Icon(Icons.Default.MailOutline, contentDescription = null)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Masuk dengan Email / Akun Lain")
                         }
                     }
                 }
@@ -340,6 +340,123 @@ fun ProfileScreen(
                         Icon(Icons.Default.Sync, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("Sinkronkan Sekarang")
+                    }
+                }
+            }
+
+            // 3.5. Purchased & Accessible Packages Card
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Inventory2, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                "Paket Soal Saya",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        if (entitlement.isPremiumUser) {
+                            Surface(
+                                color = Color(0xFF2E7D32).copy(alpha = 0.15f),
+                                shape = RoundedCornerShape(6.dp)
+                            ) {
+                                Text(
+                                    "SEMUA TERBUKA (PRO)",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color(0xFF2E7D32),
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Paket soal yang telah Anda beli atau miliki aksesnya. Paket ini juga dapat Anda temukan langsung di menu Beranda pada kategori masing-masing tanpa tanda gembok.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    val accessiblePackages = allPackages.filter {
+                        entitlement.isPackageAccessible(it.id, it.isFree)
+                    }
+
+                    if (accessiblePackages.isEmpty()) {
+                        Surface(
+                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(14.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Belum ada paket PRO berbayar yang dibuka.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    } else {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            accessiblePackages.forEach { pkg ->
+                                Surface(
+                                    shape = RoundedCornerShape(10.dp),
+                                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)),
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(12.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Text(
+                                                text = pkg.title,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Text(
+                                                text = "${pkg.subCategory} • ${pkg.totalQuestions} Soal • ${pkg.durationMinutes} Menit",
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+
+                                        Spacer(modifier = Modifier.width(8.dp))
+
+                                        Button(
+                                            onClick = { onPackageClick(pkg.id) },
+                                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                                        ) {
+                                            Text("Mulai Ujian", style = MaterialTheme.typography.labelMedium)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -463,29 +580,83 @@ fun ProfileScreen(
         }
 
         if (showSignOutDialog) {
-        AlertDialog(
-            onDismissRequest = { showSignOutDialog = false },
-            title = { Text("Konfirmasi Keluar") },
-            text = { Text("Apakah Anda yakin ingin keluar dari akun Google ini? Anda akan kembali ke Mode Tamu.") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showSignOutDialog = false
-                        viewModel.signOut()
-                        Toast.makeText(context, "Anda telah keluar dari akun", Toast.LENGTH_SHORT).show()
+            AlertDialog(
+                onDismissRequest = { showSignOutDialog = false },
+                title = { Text("Konfirmasi Keluar") },
+                text = { Text("Apakah Anda yakin ingin keluar dari akun Google ini? Anda akan kembali ke Mode Tamu.") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showSignOutDialog = false
+                            viewModel.signOut()
+                            Toast.makeText(context, "Anda telah keluar dari akun", Toast.LENGTH_SHORT).show()
+                        }
+                    ) {
+                        Text("Keluar", color = MaterialTheme.colorScheme.error)
                     }
-                ) {
-                    Text("Keluar", color = MaterialTheme.colorScheme.error)
+                },
+                dismissButton = {
+                    TextButton(onClick = { showSignOutDialog = false }) {
+                        Text("Batal")
+                    }
                 }
-            },
-            dismissButton = {
-                TextButton(onClick = { showSignOutDialog = false }) {
-                    Text("Batal")
+            )
+        }
+
+        if (showManualEmailDialog) {
+            AlertDialog(
+                onDismissRequest = { showManualEmailDialog = false },
+                title = { Text("Masuk dengan Akun Google", fontWeight = FontWeight.Bold) },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text(
+                            text = "Masukkan alamat email akun Google Anda untuk mengamankan riwayat dan hak akses tryout:",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
+                        OutlinedTextField(
+                            value = manualNameInput,
+                            onValueChange = { manualNameInput = it },
+                            label = { Text("Nama Pengguna") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        OutlinedTextField(
+                            value = manualEmailInput,
+                            onValueChange = { manualEmailInput = it },
+                            label = { Text("Alamat Email Google") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            if (manualEmailInput.isNotBlank()) {
+                                showManualEmailDialog = false
+                                viewModel.signInWithGoogle(
+                                    displayName = if (manualNameInput.isNotBlank()) manualNameInput else "Pengguna Google",
+                                    email = manualEmailInput.trim(),
+                                    photoUrl = null
+                                )
+                                Toast.makeText(context, "Selamat datang, ${manualEmailInput.trim()}!", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    ) {
+                        Text("Masuk Sekarang")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showManualEmailDialog = false }) {
+                        Text("Batal")
+                    }
                 }
-            }
-        )
+            )
+        }
     }
-}
 
 @Composable
 private fun StatItem(
