@@ -72,11 +72,11 @@ class CatalogViewModel(
             val result = syncManager.syncCatalogFromGitHub()
             result.onSuccess { catalog ->
                 _uiState.update {
-                    it.copy(syncStatus = SyncStatus.Success("Berhasil memperbarui ${catalog.packages.size} paket dari GitHub!"))
+                    it.copy(syncStatus = SyncStatus.Success("Berhasil memperbarui ${catalog.packages.size} paket soal!"))
                 }
             }.onFailure { err ->
                 _uiState.update {
-                    it.copy(syncStatus = SyncStatus.Error("Gagal terhubung ke GitHub: ${err.localizedMessage ?: "Koneksi offline"}"))
+                    it.copy(syncStatus = SyncStatus.Error("Gagal memperbarui katalog: ${err.localizedMessage ?: "Koneksi offline"}"))
                 }
             }
         }

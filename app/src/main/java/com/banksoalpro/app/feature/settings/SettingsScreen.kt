@@ -32,7 +32,7 @@ fun SettingsScreen() {
     ) {
         item {
             Text(
-                text = "Pusat Konten & Pembaruan",
+                text = "Pusat Bantuan & Kontak",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -44,17 +44,7 @@ fun SettingsScreen() {
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                    SettingItem(
-                        icon = Icons.Default.CloudDownload,
-                        title = "Sumber Bank Soal (GitHub)",
-                        subtitle = AppConstants.GITHUB_REPO_URL,
-                        onClick = {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AppConstants.GITHUB_REPO_URL))
-                            context.startActivity(intent)
-                        }
-                    )
-                    HorizontalDivider(color = Slate200, thickness = 0.5.dp)
+                Column(modifier = Modifier.padding(16.dp)) {
                     SettingItem(
                         icon = Icons.Default.Email,
                         title = "Kontak Pengembang / Bantuan",
@@ -115,7 +105,7 @@ fun SettingsScreen() {
                     SettingItem(
                         icon = Icons.Default.Info,
                         title = "Versi Aplikasi",
-                        subtitle = "v1.0.0 (Bank Soal CAT Edition)",
+                        subtitle = "v1.0.3 (Bank Soal Pro CAT Edition)",
                         onClick = {}
                     )
                 }

@@ -2,7 +2,9 @@ package com.banksoalpro.app.feature.review
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -257,7 +259,7 @@ private fun ReviewScoreSummaryHeader(
                 StatBadge(label = "Benar", value = "$correctCount", color = Emerald600)
                 StatBadge(label = "Salah", value = "$wrongCount", color = Crimson600)
                 StatBadge(label = "Kosong", value = "$unansweredCount", color = Slate600)
-                StatBadge(label = "Passing Grade", value = "$passingScore", color = Navy700)
+                StatBadge(label = "Target PG", value = "$passingScore", color = Navy700)
             }
         }
     }
@@ -281,18 +283,20 @@ private fun ReviewFilterBar(
     onFilterSelected: (ReviewFilter) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         FilterChip(
             selected = activeFilter == ReviewFilter.ALL,
             onClick = { onFilterSelected(ReviewFilter.ALL) },
-            label = { Text("Semua ($totalCount)") }
+            label = { Text("Semua ($totalCount)", maxLines = 1) }
         )
         FilterChip(
             selected = activeFilter == ReviewFilter.CORRECT,
             onClick = { onFilterSelected(ReviewFilter.CORRECT) },
-            label = { Text("Benar ($correctCount)") },
+            label = { Text("Benar ($correctCount)", maxLines = 1) },
             colors = FilterChipDefaults.filterChipColors(
                 selectedContainerColor = Emerald100,
                 selectedLabelColor = Emerald600
@@ -301,7 +305,7 @@ private fun ReviewFilterBar(
         FilterChip(
             selected = activeFilter == ReviewFilter.WRONG,
             onClick = { onFilterSelected(ReviewFilter.WRONG) },
-            label = { Text("Salah ($wrongCount)") },
+            label = { Text("Salah ($wrongCount)", maxLines = 1) },
             colors = FilterChipDefaults.filterChipColors(
                 selectedContainerColor = Crimson100,
                 selectedLabelColor = Crimson600
@@ -310,7 +314,7 @@ private fun ReviewFilterBar(
         FilterChip(
             selected = activeFilter == ReviewFilter.UNANSWERED,
             onClick = { onFilterSelected(ReviewFilter.UNANSWERED) },
-            label = { Text("Kosong ($unansweredCount)") }
+            label = { Text("Kosong ($unansweredCount)", maxLines = 1) }
         )
     }
 }

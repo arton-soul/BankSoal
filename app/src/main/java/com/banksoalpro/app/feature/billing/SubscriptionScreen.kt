@@ -206,7 +206,7 @@ fun SubscriptionScreen(
                             .clickable { selectedSubscriptionId = sub.id }
                             .then(
                                 if (isSelected) Modifier.border(2.dp, Amber500, RoundedCornerShape(16.dp))
-                                else Modifier
+                                else Modifier.border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
                             ),
                         shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(
@@ -215,54 +215,72 @@ fun SubscriptionScreen(
                         ),
                         elevation = CardDefaults.cardElevation(defaultElevation = if (isSelected) 3.dp else 1.dp)
                     ) {
-                        Row(
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .padding(16.dp)
                         ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                    modifier = Modifier.weight(1f, fill = false)
+                                ) {
+                                    RadioButton(
+                                        selected = isSelected,
+                                        onClick = { selectedSubscriptionId = sub.id },
+                                        colors = RadioButtonDefaults.colors(selectedColor = Amber500)
+                                    )
                                     Text(
                                         text = sub.title,
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold
                                     )
-                                    if (isYearly) {
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        Surface(
-                                            color = Amber500,
-                                            shape = RoundedCornerShape(6.dp)
-                                        ) {
-                                            Text(
-                                                "HEMAT 56%",
-                                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                                                style = MaterialTheme.typography.labelSmall,
-                                                fontWeight = FontWeight.Bold,
-                                                color = PureWhite
-                                            )
-                                        }
+                                }
+
+                                if (isYearly) {
+                                    Surface(
+                                        color = Amber500,
+                                        shape = RoundedCornerShape(20.dp)
+                                    ) {
+                                        Text(
+                                            "HEMAT 56%",
+                                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            color = PureWhite
+                                        )
                                     }
                                 }
+                            }
+
+                            Spacer(modifier = Modifier.height(6.dp))
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 38.dp),
+                                verticalAlignment = Alignment.Bottom,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
                                 Text(
                                     text = sub.description,
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.weight(1f)
                                 )
-                                Spacer(modifier = Modifier.height(4.dp))
+                                Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = sub.formattedPrice,
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.ExtraBold,
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             }
-
-                            RadioButton(
-                                selected = isSelected,
-                                onClick = { selectedSubscriptionId = sub.id }
-                            )
                         }
                     }
                 }
@@ -282,22 +300,40 @@ fun SubscriptionScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
+                    .height(58.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Amber500),
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 enabled = purchaseState !is BillingPurchaseState.Loading
             ) {
                 if (purchaseState is BillingPurchaseState.Loading) {
                     CircularProgressIndicator(color = PureWhite, modifier = Modifier.size(24.dp))
                 } else {
-                    Icon(Icons.Default.LockOpen, contentDescription = null, tint = PureWhite)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        "Langganan Sekarang • ${selectedProduct.formattedPrice}",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = PureWhite
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.WorkspacePremium,
+                            contentDescription = null,
+                            tint = PureWhite,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "Langganan PRO Sekarang",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = PureWhite
+                            )
+                            Text(
+                                text = selectedProduct.formattedPrice,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.SemiBold,
+                                color = PureWhite.copy(alpha = 0.95f)
+                            )
+                        }
+                    }
                 }
             }
         }

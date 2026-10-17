@@ -89,7 +89,7 @@ fun CatalogScreen(
                         } else {
                             Icon(
                                 imageVector = Icons.Default.Sync,
-                                contentDescription = "Sinkronisasi GitHub"
+                                contentDescription = "Perbarui Katalog Soal"
                             )
                         }
                     }
@@ -126,7 +126,7 @@ fun CatalogScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Tekan tombol perbarui untuk mengambil katalog soal terbaru dari repository GitHub.",
+                            text = "Tekan tombol perbarui di bawah untuk memperbarui katalog soal secara online.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -134,7 +134,7 @@ fun CatalogScreen(
                         Button(onClick = { viewModel.syncFromGitHub() }) {
                             Icon(imageVector = Icons.Default.Sync, contentDescription = null)
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("Perbarui dari GitHub")
+                            Text("Perbarui Katalog Soal")
                         }
                     }
                 }
