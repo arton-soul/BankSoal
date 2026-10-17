@@ -18,6 +18,30 @@ object GoogleSignInHelper {
         return GoogleSignIn.getClient(context, gso)
     }
 
+    /**
+     * Sign out first to clear the cached Google session, forcing Google Play Services
+     * to ALWAYS display the account chooser dialog (pilih akun lain / ganti akun).
+     */
+    fun launchSignInWithAccountChooser(
+        context: Context,
+        onReadyToLaunch: (Intent) -> Unit
+    ) {
+        val client = getGoogleSignInClient(context)
+        client.signOut().addOnCompleteListener {
+            onReadyToLaunch(client.signInIntent)
+        }
+    }
+
+    /**
+     * Sign out and clear cached Google Play Services account.
+     */
+    fun signOut(context: Context, onComplete: () -> Unit = {}) {
+        val client = getGoogleSignInClient(context)
+        client.signOut().addOnCompleteListener {
+            onComplete()
+        }
+    }
+
     fun parseSignInResult(data: Intent?): Result<GoogleSignInAccount> {
         return try {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)

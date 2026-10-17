@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "257452203979",
+    "project_id": "banksoal-2c721",
+    "storage_bucket": "banksoal-2c721.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257452203979:android:ef2474cad63c2fe5f4604e",
+        "android_client_info": {
+          "package_name": "com.banksoalpro.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAw3wVWejk_EoCADfZfr0OVGicsLgc0M_M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
