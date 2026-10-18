@@ -7,7 +7,33 @@ Dokumen ini berisi catatan rilis resmi untuk setiap versi aplikasi yang siap dis
 
 ---
 
-## 📌 Versi 1.0.4 (Build 5) - Integrasi Resmi Google Play Billing & Penyempurnaan UI (Current Active Release)
+## 📌 Versi 1.0.6 (Build 7) - Paket PRO 110 Soal & Optimalisasi Bebas Iklan Pembeli (Current Active Release)
+*Tanggal Rilis: Oktober 2026*  
+*Target Track: Internal Testing / Closed Testing / Production*
+
+### Bahasa Indonesia (`id-ID`)
+```text
+Pembaruan Bank Soal Pro v1.0.6:
+• Kebijakan Bebas Iklan Menyeluruh: Pengguna berbayar (langganan atau paket satuan) sepenuhnya bebas dari semua iklan.
+• Pengoptimalan Iklan Pengguna Gratis: Iklan interstisial kini hanya muncul setelah selesai mengerjakan soal ujian.
+• Penambahan Paket PRO 110 Soal: Simulasi lengkap 110 butir soal untuk SMP, SMA, Kedinasan, UTBK, dan SKD CPNS.
+• Peningkatan sinkronisasi katalog dan butir soal otomatis dari repositori.
+• Peningkatan performa dan respons aplikasi.
+```
+
+### English (`en-US`)
+```text
+Bank Soal Pro v1.0.6 update:
+• Ad-Free Experience for Buyers: All paying users (subscribers & single-pack buyers) enjoy zero ads.
+• Optimized Free User Ads: Interstitial ads now appear strictly after completing an exam session.
+• 110-Question PRO Packages: Full 110-item simulations across SMP, SMA, Kedinasan, UTBK, and CPNS SKD.
+• Automatic OTA question synchronization and auto-heal.
+• General performance and stability enhancements.
+```
+
+---
+
+## 📌 Versi 1.0.4 (Build 5) - Integrasi Resmi Google Play Billing & Penyempurnaan UI
 *Tanggal Rilis: Oktober 2026*  
 *Target Track: Internal Testing / Closed Testing / Production*
 
