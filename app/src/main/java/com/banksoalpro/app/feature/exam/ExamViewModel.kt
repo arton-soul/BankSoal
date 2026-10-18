@@ -42,11 +42,27 @@ class ExamViewModel(
                     var examPackage = packageRepository.getPackageById(packageId)
                     var questionsList = examRepository.getQuestionsListByPackageId(packageId)
 
-                    // Jika belum ada di database, coba seed dari assets secara instan
-                    if (examPackage == null || questionsList.isEmpty()) {
+                    // Jika belum ada di database atau jumlah butir soal belum lengkap:
+                    val isMissingOrIncomplete = examPackage == null ||
+                            questionsList.isEmpty() ||
+                            (examPackage.totalQuestions > 0 && questionsList.size < examPackage.totalQuestions)
+
+                    if (isMissingOrIncomplete) {
+                        // 1. Coba pulihkan dari assets lokal
                         syncManager?.seedPackageFromAssetIfMissing(packageId)
                         examPackage = packageRepository.getPackageById(packageId)
                         questionsList = examRepository.getQuestionsListByPackageId(packageId)
+
+                        // 2. Jika masih belum lengkap (misal aset di APK lama), unduh langsung dari GitHub
+                        if (examPackage != null && questionsList.size < examPackage.totalQuestions) {
+                            try {
+                                syncManager?.downloadPackageFromGitHub("packages/$packageId.json")
+                                examPackage = packageRepository.getPackageById(packageId)
+                                questionsList = examRepository.getQuestionsListByPackageId(packageId)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
                     }
 
                     if (examPackage == null || questionsList.isEmpty()) {

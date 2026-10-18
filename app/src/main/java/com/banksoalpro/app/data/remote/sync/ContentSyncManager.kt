@@ -31,20 +31,22 @@ class ContentSyncManager(
             val assetManager = context.assets
             val files = assetManager.list("seed/packages") ?: emptyArray()
 
-            database.withTransaction {
-                for (filename in files) {
-                    if (filename.endsWith(".json")) {
-                        val packageId = filename.removeSuffix(".json")
-                        val existingPkg = packageDao.getPackageById(packageId)
-                        val questionCount = questionDao.getQuestionCountByPackageId(packageId)
+            for (filename in files) {
+                if (filename.endsWith(".json")) {
+                    val packageId = filename.removeSuffix(".json")
+                    val existingPkg = packageDao.getPackageById(packageId)
+                    val questionCount = questionDao.getQuestionCountByPackageId(packageId)
 
-                        if (existingPkg == null || questionCount == 0) {
-                            val jsonString = assetManager.open("seed/packages/$filename").bufferedReader().use { it.readText() }
-                            val fullPackageDto = ExamJsonParser.parseFullPackage(jsonString)
-                            val (pkg, passages, questions) = ExamJsonParser.toEntities(fullPackageDto)
+                    val jsonString = assetManager.open("seed/packages/$filename").bufferedReader().use { it.readText() }
+                    val fullPackageDto = ExamJsonParser.parseFullPackage(jsonString)
 
+                    if (existingPkg == null || questionCount < fullPackageDto.questions.size || (existingPkg.version < fullPackageDto.packageMeta.version)) {
+                        val (pkg, passages, questions) = ExamJsonParser.toEntities(fullPackageDto)
+
+                        database.withTransaction {
                             packageDao.insertPackage(pkg.copy(isDownloaded = true))
                             if (passages.isNotEmpty()) passageDao.insertPassages(passages)
+                            questionDao.deleteQuestionsByPackageId(pkg.id)
                             if (questions.isNotEmpty()) questionDao.insertQuestions(questions)
                         }
                     }
@@ -65,20 +67,23 @@ class ContentSyncManager(
 
         val existingPkg = packageDao.getPackageById(packageId)
         val questionCount = questionDao.getQuestionCountByPackageId(packageId)
-        if (existingPkg != null && questionCount > 0) {
-            return@withContext true
-        }
 
         try {
             val assetManager = context.assets
             val assetFileName = "seed/packages/$packageId.json"
             val jsonString = assetManager.open(assetFileName).bufferedReader().use { it.readText() }
             val fullPackageDto = ExamJsonParser.parseFullPackage(jsonString)
+
+            if (existingPkg != null && questionCount >= fullPackageDto.questions.size && existingPkg.version >= fullPackageDto.packageMeta.version) {
+                return@withContext true
+            }
+
             val (pkg, passages, questions) = ExamJsonParser.toEntities(fullPackageDto)
 
             database.withTransaction {
                 packageDao.insertPackage(pkg.copy(isDownloaded = true))
                 if (passages.isNotEmpty()) passageDao.insertPassages(passages)
+                questionDao.deleteQuestionsByPackageId(pkg.id)
                 if (questions.isNotEmpty()) questionDao.insertQuestions(questions)
             }
             true
@@ -90,6 +95,7 @@ class ContentSyncManager(
 
     /**
      * Mengambil indeks katalog terbaru langsung dari GitHub raw repository
+     * dan otomatis mengunduh butir soal jika ada pembaruan versi atau paket belum lengkap.
      */
     suspend fun syncCatalogFromGitHub(): Result<CatalogJsonDto> = withContext(Dispatchers.IO) {
         try {
@@ -98,10 +104,14 @@ class ContentSyncManager(
             val catalogDto = ExamJsonParser.parseCatalog(jsonString)
 
             val packageDao = database.examPackageDao()
-            // Perbarui metadata paket di database lokal
+            val questionDao = database.questionDao()
+
             catalogDto.packages.forEach { meta ->
                 val local = packageDao.getPackageById(meta.id)
-                val isDownloaded = local?.isDownloaded ?: false
+                val localQuestionCount = questionDao.getQuestionCountByPackageId(meta.id)
+                val isNewerVersion = local != null && meta.version > local.version
+                val isIncomplete = local != null && localQuestionCount < meta.totalQuestions
+
                 val entity = ExamPackageEntity(
                     id = meta.id,
                     categoryId = meta.categoryId,
@@ -113,10 +123,21 @@ class ContentSyncManager(
                     passingScore = meta.passingScore,
                     isFree = meta.isFree,
                     priceIdr = meta.priceIdr,
-                    isDownloaded = isDownloaded,
+                    isDownloaded = local?.isDownloaded ?: false,
                     version = meta.version
                 )
                 packageDao.insertPackage(entity)
+
+                // Jika paket gratis, atau sebelumnya sudah terunduh, atau ada versi baru/belum lengkap:
+                // Otomatis unduh butir soal lengkapnya dari GitHub!
+                if (meta.isFree || local?.isDownloaded == true || isNewerVersion || isIncomplete) {
+                    try {
+                        val cleanPath = (meta.downloadUrl.takeIf { it.isNotBlank() } ?: "packages/${meta.id}.json").removePrefix("/")
+                        downloadPackageFromGitHub(cleanPath)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
             }
 
             Result.success(catalogDto)
@@ -141,9 +162,12 @@ class ContentSyncManager(
             val passageDao = database.passageDao()
             val questionDao = database.questionDao()
 
-            packageDao.insertPackage(pkg.copy(isDownloaded = true))
-            if (passages.isNotEmpty()) passageDao.insertPassages(passages)
-            if (questions.isNotEmpty()) questionDao.insertQuestions(questions)
+            database.withTransaction {
+                packageDao.insertPackage(pkg.copy(isDownloaded = true))
+                if (passages.isNotEmpty()) passageDao.insertPassages(passages)
+                questionDao.deleteQuestionsByPackageId(pkg.id)
+                if (questions.isNotEmpty()) questionDao.insertQuestions(questions)
+            }
 
             Result.success(pkg.copy(isDownloaded = true))
         } catch (e: Exception) {
