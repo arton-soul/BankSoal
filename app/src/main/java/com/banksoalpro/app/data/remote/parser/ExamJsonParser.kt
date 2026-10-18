@@ -26,7 +26,9 @@ object ExamJsonParser {
 
     fun parseFullPackage(jsonString: String): FullPackageJsonDto {
         val root = JSONObject(jsonString)
-        val packageObj = root.getJSONObject("package")
+        val packageObj = root.optJSONObject("package") 
+            ?: root.optJSONObject("packageMeta") 
+            ?: root.getJSONObject("package")
         val metaDto = parsePackageMeta(packageObj)
 
         val passages = mutableListOf<PassageJsonDto>()

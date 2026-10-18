@@ -2545,5 +2545,19 @@
       "explanation": "Gagasan inti paragraf adalah urgensi memanfaatkan pangan lokal pengganti impor gandum demi ketahanan pangan nasional.",
       "explanationImageUrl": null
     }
-  ]
+  ],
+  "package": {
+    "id": "utbk_snbt_pro_01",
+    "categoryId": "UTBK",
+    "subCategory": "TPS & Literasi - Paket PRO",
+    "title": "Master Simulasi UTBK-SNBT 2026 (Paket PRO 110 Soal)",
+    "description": "Simulasi UTBK-SNBT 2026 lengkap 110 butir soal berstandar BP3: Penalaran Umum (PU), Pemahaman Bacaan & Menulis (PBM), Pengetahuan & Pemahaman Umum (PPU), Pengetahuan Kuantitatif (PK), dan Literasi Terpadu.",
+    "totalQuestions": 110,
+    "durationMinutes": 110,
+    "passingScore": 680,
+    "isFree": false,
+    "priceIdr": 39000,
+    "version": 2,
+    "downloadUrl": "packages/utbk_snbt_pro_01.json"
+  }
 }

@@ -2545,5 +2545,19 @@
       "explanation": "Elektron bermuatan listrik negatif dan bergerak pada orbital di luar inti atom, sedangkan proton dan neutron berada di dalam inti.",
       "explanationImageUrl": null
     }
-  ]
+  ],
+  "package": {
+    "id": "sma_pro_01",
+    "categoryId": "SMA",
+    "subCategory": "Asesmen Sumatif & TKA - Paket PRO",
+    "title": "Tryout Standar Prestasi SMA 2026 (Paket PRO 110 Soal)",
+    "description": "Paket lengkap 110 butir soal Asesmen Sumatif SMA Kurikulum Merdeka & Tes Kemampuan Akademik: Matematika Lanjut, Bahasa Indonesia, Bahasa Inggris, Fisika, Kimia, Biologi, Ekonomi, dan Sosiologi.",
+    "totalQuestions": 110,
+    "durationMinutes": 110,
+    "passingScore": 75,
+    "isFree": false,
+    "priceIdr": 25000,
+    "version": 1,
+    "downloadUrl": "packages/sma_pro_01.json"
+  }
 }

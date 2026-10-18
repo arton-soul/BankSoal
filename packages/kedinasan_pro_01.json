@@ -2545,5 +2545,19 @@
       "explanation": "Tanggung jawab, kepedulian terhadap rekan, dan tanggap darurat merupakan etika dasar calon perwira/aparatur kedinasan.",
       "explanationImageUrl": null
     }
-  ]
+  ],
+  "package": {
+    "id": "kedinasan_pro_01",
+    "categoryId": "KEDINASAN",
+    "subCategory": "SKD Kedinasan - Paket PRO",
+    "title": "Tryout Sukses Seleksi Kedinasan 2026 (Paket PRO 110 Soal)",
+    "description": "Simulasi komprehensif CAT SKD Kedinasan (STAN, STIS, IPDN, Poltekip, STMKG) 110 butir soal: 30 TWK Kedinasan, 35 TIU Kedinasan, dan 45 TKP Integritas Kedinasan berbobot 1-5.",
+    "totalQuestions": 110,
+    "durationMinutes": 100,
+    "passingScore": 320,
+    "isFree": false,
+    "priceIdr": 29000,
+    "version": 1,
+    "downloadUrl": "packages/kedinasan_pro_01.json"
+  }
 }

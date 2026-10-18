@@ -2545,5 +2545,19 @@
       "explanation": "Menunjukkan sikap sosial budaya yang inklusif, menghargai keberagaman adat, dan menjunjung tinggi toleransi.",
       "explanationImageUrl": null
     }
-  ]
+  ],
+  "package": {
+    "id": "cpns_skd_pro_01",
+    "categoryId": "CPNS",
+    "subCategory": "SKD CPNS - Paket PRO",
+    "title": "Tryout Akbar SKD CPNS 2026 (Paket PRO 110 Soal)",
+    "description": "Simulasi CAT SKD CPNS 2026 berstandar BKN resmi 110 butir soal: 30 TWK, 35 TIU, dan 45 TKP dengan pembobotan nilai 1-5 dan pembahasan lengkap.",
+    "totalQuestions": 110,
+    "durationMinutes": 100,
+    "passingScore": 311,
+    "isFree": false,
+    "priceIdr": 29000,
+    "version": 2,
+    "downloadUrl": "packages/cpns_skd_pro_01.json"
+  }
 }

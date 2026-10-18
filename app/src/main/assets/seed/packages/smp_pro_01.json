@@ -2545,5 +2545,19 @@
       "explanation": "Procedure text outlines how something is made or done through: Goal (aim), Materials/Ingredients (needed items), and Steps (instructions in sequence).",
       "explanationImageUrl": null
     }
-  ]
+  ],
+  "package": {
+    "id": "smp_pro_01",
+    "categoryId": "SMP",
+    "subCategory": "Asesmen Kelulusan & ANBK - Paket PRO",
+    "title": "Master Tryout Terpadu SMP 2026 (Paket PRO 110 Soal)",
+    "description": "Simulasi Ujian Sekolah & Asesmen Standar Pendidikan SMP/MTs Kelas 7-9 terlengkap (110 Butir Soal): Matematika Numerasi, Bahasa Indonesia Literasi, IPA Terpadu, dan Bahasa Inggris.",
+    "totalQuestions": 110,
+    "durationMinutes": 110,
+    "passingScore": 75,
+    "isFree": false,
+    "priceIdr": 25000,
+    "version": 1,
+    "downloadUrl": "packages/smp_pro_01.json"
+  }
 }
