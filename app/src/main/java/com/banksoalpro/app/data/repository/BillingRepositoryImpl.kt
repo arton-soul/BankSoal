@@ -75,17 +75,30 @@ class BillingRepositoryImpl(
                 .build()
         }
 
-        val allProducts = inAppProductList + subsProductList
-        if (allProducts.isEmpty()) return
+        if (inAppProductList.isNotEmpty()) {
+            val inAppParams = QueryProductDetailsParams.newBuilder()
+                .setProductList(inAppProductList)
+                .build()
 
-        val params = QueryProductDetailsParams.newBuilder()
-            .setProductList(allProducts)
-            .build()
+            billingClient.queryProductDetailsAsync(inAppParams) { billingResult, queryResult ->
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    queryResult.productDetailsList.forEach { details ->
+                        productDetailsMap[details.productId] = details
+                    }
+                }
+            }
+        }
 
-        billingClient.queryProductDetailsAsync(params) { billingResult, queryResult ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                queryResult.productDetailsList.forEach { details ->
-                    productDetailsMap[details.productId] = details
+        if (subsProductList.isNotEmpty()) {
+            val subsParams = QueryProductDetailsParams.newBuilder()
+                .setProductList(subsProductList)
+                .build()
+
+            billingClient.queryProductDetailsAsync(subsParams) { billingResult, queryResult ->
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    queryResult.productDetailsList.forEach { details ->
+                        productDetailsMap[details.productId] = details
+                    }
                 }
             }
         }
@@ -94,15 +107,29 @@ class BillingRepositoryImpl(
     override fun launchPurchaseFlow(activity: Activity, product: AppBillingProduct) {
         _purchaseState.value = BillingPurchaseState.Loading
 
+        if (!isConnected) {
+            _purchaseState.value = BillingPurchaseState.Error("Menghubungkan ke Google Play Store... Silakan coba beberapa detik lagi.")
+            startConnection {
+                queryAvailableProducts()
+            }
+            return
+        }
+
         val productDetails = productDetailsMap[product.id]
-        if (productDetails == null || !isConnected) {
-            // Fallback for emulator / testing sandbox without Google Play Services
-            simulateLocalPurchase(product)
+        if (productDetails == null) {
+            queryAvailableProducts()
+            _purchaseState.value = BillingPurchaseState.Error(
+                "Produk '${product.title}' belum dapat dimuat dari Google Play. Pastikan aplikasi telah tersinkronisasi dengan Play Store atau coba sesaat lagi."
+            )
             return
         }
 
         val productDetailsParamsList = if (product.isSubscription) {
-            val offerToken = productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken ?: ""
+            val offerToken = productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken
+            if (offerToken.isNullOrEmpty()) {
+                _purchaseState.value = BillingPurchaseState.Error("Paket dasar langganan belum aktif di Google Play.")
+                return
+            }
             listOf(
                 BillingFlowParams.ProductDetailsParams.newBuilder()
                     .setProductDetails(productDetails)
@@ -194,18 +221,6 @@ class BillingRepositoryImpl(
             else -> {
                 entitlementRepository.unlockPackage(userId, productId)
             }
-        }
-    }
-
-    private fun simulateLocalPurchase(product: AppBillingProduct) {
-        scope.launch {
-            val user = authRepository.getCurrentUser()
-            val userId = user?.userId ?: "guest_local"
-            grantEntitlementForProduct(userId, product.id)
-            _purchaseState.value = BillingPurchaseState.Success(
-                message = "Pembelian ${product.title} berhasil diaktifkan!",
-                productId = product.id
-            )
         }
     }
 
