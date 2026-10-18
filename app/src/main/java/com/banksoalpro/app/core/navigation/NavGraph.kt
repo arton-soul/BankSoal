@@ -44,7 +44,7 @@ fun AppNavGraph(
 
             HomeScreen(
                 userProfile = userProfile,
-                isPremiumUser = entitlement.isSubscriptionActive,
+                isPremiumUser = entitlement.hasPurchased,
                 onCategoryClick = { categoryId ->
                     navController.navigate(Screen.Catalog.createRoute(categoryId))
                 },
@@ -111,6 +111,11 @@ fun AppNavGraph(
             val context = LocalContext.current
             val app = context.applicationContext as BankSoalApplication
 
+            val activity = context as? android.app.Activity
+            val entitlement by app.container.entitlementRepository.currentEntitlement.collectAsStateWithLifecycle(
+                com.banksoalpro.app.domain.model.UserEntitlement(userId = "")
+            )
+
             val examViewModel: ExamViewModel = viewModel(
                 viewModelStoreOwner = backStackEntry,
                 key = "exam_${backStackEntry.id}",
@@ -130,8 +135,22 @@ fun AppNavGraph(
                 packageId = packageId,
                 viewModel = examViewModel,
                 onFinishExam = { attemptId ->
-                    navController.navigate(Screen.Result.createRoute(attemptId)) {
-                        popUpTo(Screen.Home.route)
+                    fun navigateToResult() {
+                        navController.navigate(Screen.Result.createRoute(attemptId)) {
+                            popUpTo(Screen.Home.route)
+                        }
+                    }
+
+                    if (activity != null && entitlement.shouldShowAds) {
+                        com.banksoalpro.app.core.ads.AdsManager.showInterstitial(
+                            activity = activity,
+                            isPremiumUser = !entitlement.shouldShowAds,
+                            onAdDismissed = {
+                                navigateToResult()
+                            }
+                        )
+                    } else {
+                        navigateToResult()
                     }
                 },
                 onBackClick = {
@@ -157,7 +176,7 @@ fun AppNavGraph(
 
             ResultScreen(
                 attemptId = attemptId,
-                isPremiumUser = entitlement.isSubscriptionActive,
+                isPremiumUser = entitlement.hasPurchased,
                 onReviewClick = { attempt ->
                     navController.navigate(Screen.Review.createRoute(attempt))
                 },

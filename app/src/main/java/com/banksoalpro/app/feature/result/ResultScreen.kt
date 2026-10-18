@@ -35,15 +35,7 @@ fun ResultScreen(
     val activity = context as? Activity
 
     fun handleDismissWithAd(action: () -> Unit) {
-        if (activity != null) {
-            AdsManager.showInterstitial(
-                activity = activity,
-                isPremiumUser = isPremiumUser,
-                onAdDismissed = action
-            )
-        } else {
-            action()
-        }
+        action()
     }
 
     Scaffold(

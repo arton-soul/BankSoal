@@ -20,4 +20,16 @@ data class UserEntitlement(
 
     val isSubscriptionActive: Boolean
         get() = isPremiumUser && (premiumExpiryDate == null || premiumExpiryDate > System.currentTimeMillis())
+
+    /**
+     * Bernilai true jika pengguna telah melakukan pembelian (langganan aktif ataupun paket berbayar sekali beli)
+     */
+    val hasPurchased: Boolean
+        get() = isSubscriptionActive || unlockedPackageIds.isNotEmpty()
+
+    /**
+     * Iklan hanya boleh muncul untuk pengguna gratisan yang belum pernah melakukan pembelian
+     */
+    val shouldShowAds: Boolean
+        get() = !hasPurchased
 }

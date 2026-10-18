@@ -213,9 +213,16 @@ class BillingRepositoryImpl(
                 entitlementRepository.unlockPackage(userId, "utbk_snbt_pro_01")
                 entitlementRepository.unlockPackage(userId, "pkg_utbk_lengkap_2026")
             }
+            AppBillingProduct.KedinasanMaster.id -> {
+                entitlementRepository.unlockPackage(userId, "kedinasan_sample_01")
+                entitlementRepository.unlockPackage(userId, "kedinasan_pro_01")
+                entitlementRepository.unlockPackage(userId, "pkg_kedinasan_master_2026")
+            }
             AppBillingProduct.SmaSmpAll.id -> {
                 entitlementRepository.unlockPackage(userId, "sma_sample_01")
                 entitlementRepository.unlockPackage(userId, "smp_sample_01")
+                entitlementRepository.unlockPackage(userId, "sma_pro_01")
+                entitlementRepository.unlockPackage(userId, "smp_pro_01")
                 entitlementRepository.unlockPackage(userId, "pkg_sma_smp_all")
             }
             else -> {

@@ -49,8 +49,16 @@ sealed class AppBillingProduct(
         isSubscription = true
     )
 
+    object KedinasanMaster : AppBillingProduct(
+        id = "pkg_kedinasan_master_2026",
+        title = "Paket Sukses Sekolah Kedinasan 2026",
+        description = "Akses permanen seluruh materi SKD Kedinasan IPDN, STAN, STIS, Poltekip (110 Soal Berbobot).",
+        formattedPrice = "Rp 29.000",
+        isSubscription = false
+    )
+
     companion object {
-        val IN_APP_PRODUCTS = listOf(CpnsMaster, UtbkLengkap, SmaSmpAll)
+        val IN_APP_PRODUCTS = listOf(CpnsMaster, UtbkLengkap, KedinasanMaster, SmaSmpAll)
         val SUBSCRIPTIONS = listOf(ProMonthly, ProYearly)
         val ALL_PRODUCTS = IN_APP_PRODUCTS + SUBSCRIPTIONS
 

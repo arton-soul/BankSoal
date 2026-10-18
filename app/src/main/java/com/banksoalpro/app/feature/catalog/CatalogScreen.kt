@@ -57,7 +57,7 @@ fun CatalogScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             com.banksoalpro.app.core.ads.AdsManager.BannerAdView(
-                isPremiumUser = state.entitlement.isSubscriptionActive,
+                isPremiumUser = state.entitlement.hasPurchased,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
         },

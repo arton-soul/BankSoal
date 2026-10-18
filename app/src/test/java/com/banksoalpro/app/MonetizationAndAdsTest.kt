@@ -28,9 +28,9 @@ class MonetizationAndAdsTest {
 
     @Test
     fun testBillingProducts_catalogIntegrity() {
-        assertEquals(3, AppBillingProduct.IN_APP_PRODUCTS.size)
+        assertEquals(4, AppBillingProduct.IN_APP_PRODUCTS.size)
         assertEquals(2, AppBillingProduct.SUBSCRIPTIONS.size)
-        assertEquals(5, AppBillingProduct.ALL_PRODUCTS.size)
+        assertEquals(6, AppBillingProduct.ALL_PRODUCTS.size)
 
         // Verify In-App product IDs
         val cpns = AppBillingProduct.findById("pkg_cpns_master_2026")
@@ -42,6 +42,11 @@ class MonetizationAndAdsTest {
         assertNotNull(utbk)
         assertFalse(utbk!!.isSubscription)
         assertEquals("Rp 39.000", utbk.formattedPrice)
+
+        val kedinasan = AppBillingProduct.findById("pkg_kedinasan_master_2026")
+        assertNotNull(kedinasan)
+        assertFalse(kedinasan!!.isSubscription)
+        assertEquals("Rp 29.000", kedinasan.formattedPrice)
 
         val smaSmp = AppBillingProduct.findById("pkg_sma_smp_all")
         assertNotNull(smaSmp)
@@ -73,5 +78,35 @@ class MonetizationAndAdsTest {
         assertTrue(yearlyExpiry > monthlyExpiry)
         assertEquals(2592000000L, monthDuration)
         assertEquals(31536000000L, yearDuration)
+    }
+
+    @Test
+    fun testAdVisibilityRules_onlyFreeUsersSeeAds() {
+        // Free user (no subscription, no purchased packages)
+        val freeUser = com.banksoalpro.app.domain.model.UserEntitlement(
+            userId = "free_user",
+            isPremiumUser = false,
+            unlockedPackageIds = emptyList()
+        )
+        assertFalse(freeUser.hasPurchased)
+        assertTrue(freeUser.shouldShowAds)
+
+        // Subscriber user (monthly/yearly pro)
+        val subscriber = com.banksoalpro.app.domain.model.UserEntitlement(
+            userId = "subscriber",
+            isPremiumUser = true,
+            premiumExpiryDate = System.currentTimeMillis() + 1000000L
+        )
+        assertTrue(subscriber.hasPurchased)
+        assertFalse(subscriber.shouldShowAds)
+
+        // One-time package purchaser (e.g. bought CPNS or SMA/SMP)
+        val packagePurchaser = com.banksoalpro.app.domain.model.UserEntitlement(
+            userId = "buyer",
+            isPremiumUser = false,
+            unlockedPackageIds = listOf("cpns_skd_pro_01")
+        )
+        assertTrue(packagePurchaser.hasPurchased)
+        assertFalse(packagePurchaser.shouldShowAds)
     }
 }
