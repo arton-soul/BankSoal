@@ -7,7 +7,33 @@ Dokumen ini berisi catatan rilis resmi untuk setiap versi aplikasi yang siap dis
 
 ---
 
-## 📌 Versi 1.0.3 (Build 4) - Fitur Pembahasan Soal Penuh & Manajemen Paket PRO (Current Active Release)
+## 📌 Versi 1.0.4 (Build 5) - Integrasi Resmi Google Play Billing & Penyempurnaan UI (Current Active Release)
+*Tanggal Rilis: Oktober 2026*  
+*Target Track: Internal Testing / Closed Testing / Production*
+
+### Bahasa Indonesia (`id-ID`)
+```text
+Pembaruan Bank Soal Pro v1.0.4:
+• Integrasi Penuh Google Play Billing: Transaksi aman untuk paket langganan PRO bulanan, tahunan, dan paket ujian satuan.
+• Pembaruan Antarmuka Menu Premium: Desain kartu langganan yang lebih rapi, modern, dan jelas.
+• Perbaikan Filter Kunci & Pembahasan: Tampilan filter soal lebih proporsional di berbagai ukuran layar.
+• Pembaruan Pusat Bantuan & Kontak Pengembang resmi (made.sudi@gmail.com).
+• Peningkatan stabilitas dan perbaikan bug minor.
+```
+
+### English (`en-US`)
+```text
+Bank Soal Pro v1.0.4 update:
+• Official Google Play Billing Integration: Secure purchases for PRO monthly/yearly subscriptions and individual test packs.
+• Redesigned Premium Screen: Modern, clear, and attractive subscription plan cards.
+• Review Screen Optimization: Responsive filter chips across all device screen sizes.
+• Updated Help Center & Developer Support contact (made.sudi@gmail.com).
+• Stability improvements and minor bug fixes.
+```
+
+---
+
+## 📌 Versi 1.0.3 (Build 4) - Fitur Pembahasan Soal Penuh & Manajemen Paket PRO
 *Tanggal Rilis: Oktober 2026*  
 *Target Track: Internal Testing / Closed Testing / Production*
 

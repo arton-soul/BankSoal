@@ -105,7 +105,7 @@ fun SettingsScreen() {
                     SettingItem(
                         icon = Icons.Default.Info,
                         title = "Versi Aplikasi",
-                        subtitle = "v1.0.3 (Bank Soal Pro CAT Edition)",
+                        subtitle = "v1.0.4 (Bank Soal Pro CAT Edition)",
                         onClick = {}
                     )
                 }
